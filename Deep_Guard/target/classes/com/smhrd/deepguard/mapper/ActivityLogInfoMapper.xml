@@ -1,0 +1,8 @@
+<mapper namespace="com.smhrd.deepguard.mapper.ActivityLogInfoMapper">
+    <insert id="insert" parameterType="com.smhrd.deepguard.entity.activity_log_info">
+        INSERT INTO activity_log_info 
+        (log_idx, usdr_id, log_device, log_session, log_time, report_btn, session_expire_dt)
+        VALUES 
+        (#{log_idx}, #{usdr_id}, #{log_device}, #{log_session}, #{log_time}, #{report_btn}, #{session_expire_dt});
+    </insert>
+</mapper>
