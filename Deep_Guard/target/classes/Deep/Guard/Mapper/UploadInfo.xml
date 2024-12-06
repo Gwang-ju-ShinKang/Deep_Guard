@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Deep.Guard.Mapper.UploadInfo">
+	<select id="findAll" resultType="Deep.Guard.Entity.UploadInfo">
+		SELECT * FROM upload_info
+	</select>
+
+	<select id="findById" parameterType="long"
+		resultType="Deep.Guard.Entity.UploadInfo">
+		SELECT * FROM upload_info WHERE image_idx = #{image_idx}
+	</select>
+
+	<insert id="insert" parameterType="Deep.Guard.Entity.UploadInfo">
+		INSERT INTO upload_info (image_file, image_data, deepfake_data,
+		learning_content, model_pred, created_at, user_id, assent_yn)
+		VALUES (#{image_file}, #{image_data}, #{deepfake_data}, #{learning_content},
+		#{model_pred}, #{created_at}, #{user_id}, #{assent_yn})
+	</insert>
+
+	<update id="update" parameterType="Deep.Guard.Entity.UploadInfo">
+		UPDATE upload_info
+		SET image_file = #{image_file},
+		image_data = #{image_data},
+		deepfake_data = #{deepfake_data},
+		learning_content = #{learning_content},
+		model_pred = #{model_pred},
+		created_at = #{created_at},
+		user_id = #{user_id},
+		assent_yn = #{assent_yn}
+		WHERE image_idx = #{image_idx}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		DELETE FROM upload_info WHERE image_idx = #{image_idx}
+	</delete>
+</mapper>
