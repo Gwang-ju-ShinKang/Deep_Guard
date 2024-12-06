@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Deep.Guard.Mapper.ActivityLogInfo">
+	<select id="findAll"
+		resultType="Deep.Guard.Entity.ActivityLogInfo">
+		SELECT * FROM activity_log_info
+	</select>
+
+	<select id="findById" parameterType="long"
+		resultType="Deep.Guard.Entity.ActivityLogInfo">
+		SELECT * FROM activity_log_info WHERE log_idx = #{log_idx}
+	</select>
+
+	<insert id="insert"
+		parameterType="Deep.Guard.Entity.ActivityLogInfo">
+		INSERT INTO activity_log_info (user_id, log_device, log_session, log_time,
+		report_btn, session_expire_dt)
+		VALUES (#{user_id}, #{log_device}, #{log_session}, #{log_time},
+		#{report_btn}, #{session_expire_dt})
+	</insert>
+
+	<update id="update"
+		parameterType="Deep.Guard.Entity.ActivityLogInfo">
+		UPDATE activity_log_info
+		SET user_id = #{user_id},
+		log_device = #{log_device},
+		log_session = #{log_session},
+		log_time = #{log_time},
+		report_btn = #{report_btn},
+		session_expire_dt = #{session_expire_dt}
+		WHERE log_idx = #{log_idx}
+	</update>
+
+	<delete id="delete" parameterType="long">
+		DELETE FROM activity_log_info WHERE log_idx = #{log_idx}
+	</delete>
+</mapper>
