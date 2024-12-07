@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detect Disinformation</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         body {
             position: relative;
@@ -307,6 +308,7 @@
 
 <body>
 
+
     <!-- Header -->
     <div class="header">
         <a href="h.html">
@@ -324,7 +326,7 @@
     <div class="container">
         <div class="text-content">
             <h1>딥페이크 분석</h1>
-            <p>신강신강신강신강신강신강신강신강신강신강</p>
+            <p id="items">  </p>
             <p>신강신강신강신강신강신강신강신강신강신강</p>
             <a href="#" class="button">Request a demo</a>
         </div>
@@ -410,6 +412,40 @@
             }, 2000);
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            // FastAPI JSON 데이터 가져오기
+            $.ajax({
+                url: "http://127.0.0.1:8000/items", // FastAPI 엔드포인트
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data)
+                    renderItems(data); // 데이터 렌더링 함수 호출
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching items:", error);
+                    $("#items").text("Failed to load items.");
+                }
+            });
+
+            // HTML 렌더링 함수
+            function renderItems(items) {
+                $("#items").empty(); // 기존 내용 제거
+
+                items.forEach(item => {
+                    const itemHtml = `
+                <div class="item">
+                    <p>ID: ${item.user_id}</p>
+                </div>
+            `;
+                    $("#items").append(itemHtml);
+                });
+            }
+        });
+
+    </script>
+
 </body>
 
 </html>
