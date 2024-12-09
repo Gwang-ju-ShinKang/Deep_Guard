@@ -421,22 +421,28 @@
                 });
 
                 if (!response.ok) {
-                    const errorDetail = await response.json();
-                    throw new Error(errorDetail.error || '서버 오류가 발생했습니다.');
+                    const errorDetail = await response.text(); // 🚀 **서버 에러 로그 확인**
+                    console.error('서버 오류 발생:', errorDetail);
+                    throw new Error(`서버 오류 발생: ${errorDetail}`);
                 }
 
                 const result = await response.json();
-                const confidence = result.confidence;
+                console.log('서버 응답 결과:', result);
+
+                const confidence = result?.confidence;
+                if (confidence === undefined) {
+                    throw new Error('백엔드 응답에 confidence 속성이 없습니다.');
+                }
 
                 resultText.innerText = `결과 : ${confidence}%`;
 
-                // 🛠️ **차트 시각화**
-                const degree = confidence * 3.6; // 100% → 360도 변환
+                // 차트 시각화
+                const degree = confidence * 3.6;
                 chartBar.style.background = `conic-gradient(#4caf50 ${degree}deg, #ccc ${degree}deg 360deg)`;
                 chartBar.setAttribute('data-deg', degree);
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error:', error); // 에러 내용을 디버깅 로그로 출력
                 imagePreview.innerHTML = "<p>분석 중 오류가 발생했습니다.</p>";
             } finally {
                 scanButton.style.display = 'inline-block';
