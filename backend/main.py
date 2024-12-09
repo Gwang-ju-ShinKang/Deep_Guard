@@ -31,3 +31,5 @@ def get_db():
 def read_items(db: Session = Depends(get_db)):
     items = db.query(UserInfo).all()
     return items
+
+    
