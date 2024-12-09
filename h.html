@@ -341,12 +341,14 @@
                 <div id="image-preview">
                     <p>이미지를 올려주세요</p>
                 </div>
-                <input type="file" id="file-upload" name="file" accept="image/*">
-                <label for="file-upload" class="custom-file-upload">Upload Photo</label>
-                <button id="scan-button" class="scan-button" style="display: none;">SCAN</button>
-                <br>
-                <input type="checkbox" id="terms" checked>
-                <label for="terms">데이터를 제출을 동의하시겠습니까?</label>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <input type="file" id="file-upload" name="file" accept="image/*">
+                    <label for="file-upload" class="custom-file-upload">Upload Photo</label>
+                    <button id="scan-button" class="scan-button" style="display: none;">SCAN</button>
+                    <br>
+                    <input type="checkbox" id="terms" checked>
+                    <label for="terms">데이터 제출에 동의하시겠습니까?</label>
+                </form>
             </div>
         </section>
 
@@ -354,61 +356,99 @@
             <h2>결과확인</h2>
             <br>
             <div class="upload-container">
-                <div id="image-preview">
+                <div id="image-preview-result">
                     <div class="chart">
-                        <div class="chart-bar" data-deg="200"></div>
+                        <div class="chart-bar" data-deg="0"></div> <!-- 초기 값 0으로 변경 -->
                     </div>
                 </div>
-                <h2>결과 : 88%</h2>
+                <h2 id="result-text">결과 : </h2>
             </div>
             <br>
         </section>
     </main>
+
     <script>
-        // JavaScript to handle image preview and scan button visibility
         const fileInput = document.getElementById('file-upload');
         const imagePreview = document.getElementById('image-preview');
         const scanButton = document.getElementById('scan-button');
+        const resultText = document.getElementById('result-text');
+        const chartBar = document.querySelector('.chart-bar');
 
+        // 📸 **파일 업로드 처리**
         fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0]; // 선택된 파일 가져오기
+            const file = fileInput.files[0];
+
             if (file) {
-                const reader = new FileReader(); // FileReader 객체 생성
-                reader.onload = function (e) {
-                    // 업로드된 이미지 미리보기
-                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-                    scanButton.style.display = "inline-block"; // 스캔 버튼 표시
+                // ✅ 이미지 파일 형식 확인 (MIME 타입으로 검증)
+                const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!allowedMimeTypes.includes(file.type)) {
+                    alert("Invalid file type. Please upload a JPG or PNG image.");
+                    resetFileInput();
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" style="max-width: 100%; height: auto;">`;
+                    scanButton.style.display = "inline-block";
                 };
-                reader.readAsDataURL(file); // 이미지 데이터 읽기
+                reader.readAsDataURL(file);
             } else {
-                // 파일 선택 안 됨
-                imagePreview.innerHTML = "<p>No image uploaded yet.</p>";
-                scanButton.style.display = "none"; // 스캔 버튼 숨김
+                resetFileInput();
             }
         });
 
-        // 스캔 버튼 클릭 이벤트
-        scanButton.addEventListener('click', () => {
-            alert("Scanning image...");
-        });
+        // 📡 **서버로 파일 전송 후 결과 분석**
+        scanButton.addEventListener('click', async (event) => {
+            event.preventDefault();
 
-        scanButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("파일을 먼저 선택해 주세요.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
             imagePreview.innerHTML = "<p>분석 중입니다...</p>";
             scanButton.style.display = 'none';
-            chart.classList.remove('complete');
-            resultText.style.display = 'none';
 
-            setTimeout(() => {
-                chart.classList.add('complete');
-                chart.style.background = "conic-gradient(#f00 30deg, #ccc 30deg 360deg)";
-            }, 100);
+            try {
+                const response = await fetch('http://127.0.0.1:8000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
 
-            setTimeout(() => {
-                resultText.style.display = 'block';
-                imagePreview.innerHTML = "<p>이미지를 올려주세요</p>";
+                if (!response.ok) {
+                    const errorDetail = await response.json();
+                    throw new Error(errorDetail.error || '서버 오류가 발생했습니다.');
+                }
+
+                const result = await response.json();
+                const confidence = result.confidence;
+
+                resultText.innerText = `결과 : ${confidence}%`;
+
+                // 🛠️ **차트 시각화**
+                const degree = confidence * 3.6; // 100% → 360도 변환
+                chartBar.style.background = `conic-gradient(#4caf50 ${degree}deg, #ccc ${degree}deg 360deg)`;
+                chartBar.setAttribute('data-deg', degree);
+
+            } catch (error) {
+                console.error('Error:', error);
+                imagePreview.innerHTML = "<p>분석 중 오류가 발생했습니다.</p>";
+            } finally {
                 scanButton.style.display = 'inline-block';
-            }, 2000);
+            }
         });
+
+        // 🛠️ **파일 입력 초기화**
+        function resetFileInput() {
+            fileInput.value = '';
+            imagePreview.innerHTML = "<p>이미지를 올려주세요</p>";
+            scanButton.style.display = 'none';
+        }
     </script>
 </body>
 
