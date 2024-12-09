@@ -1,33 +1,60 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-from models import Base, UserInfo
-from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Numeric, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
 
-# 데이터베이스 초기화
-Base.metadata.create_all(bind=engine)
+Base = declarative_base()
 
-app = FastAPI()
+# 사용자 정보 테이블
+class UserInfo(Base):
+    __tablename__ = "user_info"
 
-# CORS 설정
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 모든 도메인 허용 (보안을 위해 특정 도메인으로 제한 가능)
-    allow_credentials=True,
-    allow_methods=["*"],  # 모든 HTTP 메서드 허용
-    allow_headers=["*"],  # 모든 헤더 허용
-)
+    user_id = Column(String(50), primary_key=True, index=True)
+    user_pw = Column(String(128))
+    user_contact = Column(String(20))
+    user_type = Column(String(10))
+    joined_at = Column(DateTime)
 
-# 의존성 주입: 데이터베이스 세션 생성
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# 활동 로그 테이블
+class ActivityLogInfo(Base):
+    __tablename__ = "activity_log_info"
 
-# API 엔드포인트: 모든 데이터 가져오기
-@app.get("/items")
-def read_items(db: Session = Depends(get_db)):
-    items = db.query(UserInfo).all()
-    return items
+    log_idx = Column(BigInteger, primary_key=True, index=True)
+    user_id = Column(String(50), ForeignKey("user_info.user_id"))
+    log_device = Column(String(50))
+    log_session = Column(String(300))
+    log_time = Column(DateTime)
+    report_btn = Column(String(10))
+    session_expire_dt = Column(DateTime)
+
+
+# 파일 업로드 테이블
+class UploadInfo(Base):
+    __tablename__ = "upload_info"
+
+    image_idx = Column(BigInteger, primary_key=True, index=True)
+    image_file = Column(String(1000))
+    image_data = Column(Text)
+    deepfake_data = Column(Text)
+    learning_content = Column(Text)
+    model_pred = Column(Numeric)
+    created_at = Column(DateTime)
+    user_id = Column(String(50), ForeignKey("user_info.user_id"))
+    assent_yn = Column(Numeric)
+
+# 이미지 업로드 백업 테이블 
+class ImageBackupInfo(Base):
+    __tablename__ = "Image_backup_info"
+
+    backup_idx = Column(BigInteger, primary_key=True, index=True)
+    original_image_file = Column(String(1000))
+    image_data = Column(Text)
+    deepfake_data = Column(Text)
+    log_device = Column(String(50))
+    log_session = Column(String(300))
+    created_at = Column(DateTime)
+    user_id = Column(String(50), ForeignKey("user_info.user_id"))
+    model_pred = Column(Numeric)
+
+
+
+
+
