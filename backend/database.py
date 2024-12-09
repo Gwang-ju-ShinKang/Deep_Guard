@@ -8,3 +8,4 @@ engine = create_engine(DATABASE_URL)
 
 # 세션 로컬 생성
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
