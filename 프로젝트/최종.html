@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect Disinformation</title>
+    <style>
+        @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SBAggroB';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'GmarketSansMedium';
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            position: fixed;
+            /* 헤더를 화면 상단에 고정 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* 화면 전체 너비 */
+            background-color: white;
+            /* 배경색 */
+            z-index: 1000;
+            /* 다른 요소 위에 표시 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 25px;
+            border-bottom: 6.6px solid black;
+            /* 구분선 */
+        }
+
+        .header .logo {
+
+            text-decoration: none;
+            font-size: 300%;
+            font-weight: bold;
+        }
+
+        .header a {
+            text-decoration-line: none;
+            text-decoration: none;
+            color: black;
+        }
+
+        .header nav a {
+            padding-right: 100px;
+            text-decoration: none;
+            color: #333;
+            font-size: 150%;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 40px;
+            /* 헤더의 높이를 고려해 여백 추가 */
+            margin-top: 60px;
+            /* 헤더와 겹치지 않도록 */
+
+        }
+
+        .text-content {
+            max-width: 50%;
+            padding-bottom: 25%;
+            padding-left: 5%;
+        }
+
+        .text-content h1 {
+            font-size: 50px;
+            margin: 0;
+        }
+
+        .text-content p {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .text-content .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background-color: #4A5246;
+            border-radius: 5px;
+        }
+
+        .image-content {
+            padding-right: 5%;
+        }
+
+        .image-content img {
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            border-radius: 10px;
+            padding-right: 50px;
+
+        }
+
+        main {
+            position: relative;
+            display: flex;
+            align-items: center;
+            bottom: 200px;
+            background-color: #f8f8f8;
+            color: #333;
+            padding-top: 150px;
+            padding-bottom: 8%;
+            justify-content: space-evenly;
+        }
+
+        main h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        main p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .section {
+            width: 50%;
+            height: 700px;
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .upload-container {
+            margin: 20px auto;
+            width: 400px;
+            height: 400px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+            color: #777;
+        }
+
+        .upload-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .upload-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .analyzing {
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 20px;
+            margin-right: 20px;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .result-container {
+            margin: 20px auto;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(#4caf50 0% 70%, #ccc 70% 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 차트 */
+        .chart {
+            width: 400px;
+            height: 400px;
+            margin: 20px auto;
+            border-radius: 50%;
+            background: conic-gradient(#ccc 0deg 360deg);
+            position: relative;
+            transform: rotate(0deg);
+            transition: transform 2s ease-in-out;
+        }
+
+        .chart.complete {
+            transform: rotate(360deg);
+        }
+
+        .chart:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 200px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #submain {
+            height: 100px;
+            background-image: linear-gradient(to bottom, #f8f8f8, #adadad);
+        }
+
+        /* 메인 2 */
+
+        #main2 {
+            margin: 0;
+            padding: 0;
+            background-color: #adadad;
+            padding-bottom: 10%;
+        }
+
+        .container2 {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto;
+            gap: 20px;
+        }
+
+        .header2 {
+            grid-column: span 4;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header2 h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .card.large {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: left;
+            padding: 30px;
+        }
+
+        .highlight {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff5722;
+            text-align: center;
+        }
+
+        .subtext {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 250px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card.large {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: black;
+            color: #fff;
+        }
+
+        /* submain 그라데이션 */
+
+        #submain2 {
+            height: 100px;
+            background-image: linear-gradient(to bottom, #adadad, #676767);
+        }
+
+        /* 메인3 */
+
+        #main3 {
+            margin: 0;
+            padding: 0;
+            background-color: #676767;
+            color: #333;
+            margin-bottom: 10%;
+        }
+
+        .container3 {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-bottom: 10%;
+        }
+
+        .header3 {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .header3 h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .breadcrumb {
+            font-size: 1rem;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .info-section {
+            margin: 20px 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-section p {
+            font-size: 1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-section p::before {
+            content: "!";
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007bff;
+            background-color: #e6f2ff;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card3 {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card3 img {
+            max-width: 50%;
+            margin-bottom: 15px;
+        }
+
+        .card3 h2 {
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+
+        .card3 p {
+            font-size: 0.9rem;
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .card3 a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        .card3 a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <a href="최종.html">
+            <div class="logo">&nbsp;DEEP GUARD</div>
+        </a>
+        <nav>
+            <a href="#1">분석하기</a>
+            <a href="#">부가서비스</a>
+            <a href="#">신고센터</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="text-content">
+            <h1>딥페이크 분석</h1>
+            <p>가나다라마바사아</p>
+            <p>자차카타파하</p>
+            <a href="#" class="button">Request a demo</a>
+        </div>
+        <div class="image-content">
+            <img src="1113.png" alt="Eye Image">
+        </div>
+    </div>
+
+    <main id="1">
+        <!-- Upload Section -->
+        <div class="section active" id="upload-section">
+            <h2>딥페이크 이미지 분석하기</h2>
+            <br>
+            <div class="upload-container" id="image-preview">
+                이미지를 올려주세요 또는 Ctrl+ V
+            </div>
+            <input type="file" id="file-upload" accept="image/*" style="display: none;">
+            <label for="file-upload" class="upload-btn">Upload Photo</label>
+            <button id="analyze-btn" class="upload-btn" style="display: none;">Analyze</button>
+        </div>
+
+        <!-- Loading Section -->
+        <div class="section" id="loading-section">
+            <h2>분석 중...</h2>
+            <div class="analyzing">Analyzing image, please wait...</div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="section" id="result-section">
+            <h2>결과 확인</h2><br>
+            <div class="chart" id="chart"></div>
+            <p>분석 결과 : 딥페이크 확률 <span id="percentage">0</span>%</p>
+            <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
+
+        </div>
+    </main>
+
+    <main id="submain"></main>
+
+    <main id="main2">
+        <div class="container2">
+            <!-- Header -->
+            <div class="header2">
+                <h1>전세계 딥페이크 상황</h1>
+            </div>
+
+            <!-- Card 1: Large Pie Chart -->
+            <div class="card large">
+                <canvas id="pieChart"></canvas>
+                <div>
+                    <p class="highlight">98%</p>
+                    <p class="subtext">Deepfake pornography makes up 98% of all deepfake videos online</p>
+                </div>
+            </div>
+
+            <!-- Card 2: Total Views -->
+            <div class="card">
+                <p class="highlight">303,640,207</p>
+                <p class="subtext">Total video views across top 10 dedicated deepfake porn websites</p>
+            </div>
+
+            <!-- Card 3: Total Traffic -->
+            <div class="card">
+                <p class="highlight">34,836,914</p>
+                <p class="subtext">Total traffic across top 10 dedicated deepfake porn websites</p>
+            </div>
+
+            <!-- Card 4: Total Deepfake Videos -->
+            <div class="card">
+                <p class="highlight">95,820</p>
+                <p class="subtext">Total deepfake videos online in 2023</p>
+            </div>
+
+            <!-- Card 5: Number of Deepfake Porn -->
+            <div class="card">
+                <p class="highlight">21,019</p>
+                <p class="subtext">Number of deepfake porn in 2023</p>
+            </div>
+
+            <!-- Card 6: Bar Chart -->
+            <div class="card large">
+                <canvas id="barChart"></canvas>
+                <p class="subtext">Deepfake pornography videos by host website type</p>
+            </div>
+        </div>
+
+    </main>
+
+    <main id="submain2"></main>
+
+    <main id="main3">
+        <div class="container3">
+            <div class="header3">
+                <h1>신고센터 및 유관기관 안내</h1>
+            </div>
+
+            <div class="info-section">
+                <p>아래 유관기관을 통해서 도움을 받으실 수 있습니다.</p>
+            </div>
+
+            <div class="grid-container">
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>인터넷 거래 관련 민원</h3>
+                    <p>위조상품 민원</p>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>소액결제 및 개인정보 침해 민원</h3>
+                    <p>스팸 신고</p>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>도박 및 불법 광고 신고</h3>
+                    <p>불법 정보 차단</p>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>명예훼손 등 사이버 민원</h3>
+                    <p>삭제 및 차단 요청</p>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>쇼핑몰 불만 신고</h3>
+                    <p>전화: 02-2133-4891</p>
+                    <a href="#">홈페이지 이동</a>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>전자거래 분쟁 상담</h3>
+                    <p>전화: 118</p>
+                    <a href="#">홈페이지 이동</a>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>물품 구매 피해</h3>
+                    <p>전화: 1372</p>
+                    <a href="#">홈페이지 이동</a>
+                </div>
+                <div class="card3">
+                    <img src="이상해씨.jpg" alt="Icon">
+                    <h3>저작권 침해 신고</h3>
+                    <p>전화: 1588-0190</p>
+                    <a href="#">홈페이지 이동</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; (주) Deep Guard</p>
+        <p>&copy; 회사 주소 : 광주광역시 남구 CGI센터 SMHRD</p>
+        <p>&copy; E-mail Address : deepguard@naver.com</p>
+        <p>&copy; TEL : 010 - 1234 - 5678</p>
+        <p>&copy; 개인정보 처리 방침</p>
+        <p>&copy; 사이트 이용 약관</p>
+    </footer>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./NanumGothicBase64Bold.js"></script>
+    <script src="./NanumGothicBase64.js"></script>
+
+    <script>
+        // NanumGothic-Regular 폰트를 Base64 형식으로 추가
+        const nanumGothicFont = `
+        <Base64 Encoded Font Content Here>
+    `;
+
+        const fileInput = document.getElementById('file-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const uploadSection = document.getElementById('upload-section');
+        const loadingSection = document.getElementById('loading-section');
+        const resultSection = document.getElementById('result-section');
+        const chart = document.getElementById('chart');
+        const percentageText = document.getElementById('percentage');
+        const retryBtn = document.createElement('button');
+        const pdfButton = document.createElement('button');
+
+        // "다시 분석하기" 버튼 추가
+        retryBtn.textContent = "다시 분석하기";
+        retryBtn.classList.add('upload-btn');
+        retryBtn.style.marginTop = "20px";
+        retryBtn.style.marginRight = "20px";
+        retryBtn.style.display = "none";
+        resultSection.appendChild(retryBtn);
+
+        // PDF 저장 버튼 추가
+
+
+        // 이미지 업로드 핸들러
+        // 이미지 업로드 핸들러
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                    analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 클립보드 이미지 붙여넣기 처리
+        imagePreview.addEventListener("paste", (event) => {
+            const items = event.clipboardData.items;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.type.startsWith("image/")) {
+                    const file = item.getAsFile();
+                    if (file) {
+                        handleFileUpload(file);
+                        analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+                    }
+                }
+            }
+        });
+
+        // 파일 처리 함수
+        function handleFileUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                generatePdfButton.style.display = "inline-block"; // PDF 저장 버튼 표시
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 분석 버튼 핸들러
+        let fakeProbability = 0; // 정확도 값을 저장할 변수
+        analyzeBtn.addEventListener('click', () => {
+            uploadSection.classList.remove('active');
+            loadingSection.classList.add('active');
+
+            setTimeout(() => {
+                loadingSection.classList.remove('active');
+                resultSection.classList.add('active');
+
+                // 차트 애니메이션 실행
+                fakeProbability = Math.floor(Math.random() * 101);
+                animateChart(fakeProbability);
+
+            }, 3000); // 3초 동안 로딩 상태 유지
+        });
+
+        // 차트 애니메이션 함수
+        function animateChart(targetPercentage) {
+            let currentPercentage = 0;
+            const interval = setInterval(() => {
+                const angle = currentPercentage * 3.6;
+
+                // 색상 변경 로직
+                let color = "#4caf50"; // Default green
+                if (currentPercentage < 30) {
+                    color = "#ff5722"; // Red for low percentages
+                } else if (currentPercentage < 70) {
+                    color = "#ffc107"; // Yellow for mid percentages
+                }
+
+                // 차트 배경 업데이트
+                chart.style.background = `conic-gradient(${color} 0deg ${angle}deg, #ccc ${angle}deg 360deg)`;
+                percentageText.textContent = currentPercentage; // 텍스트 업데이트
+
+                // 목표치에 도달하면 애니메이션 멈추기
+                if (currentPercentage >= targetPercentage) {
+                    clearInterval(interval);
+
+                    // "다시 분석하기"와 "PDF 저장" 버튼 표시
+                    retryBtn.style.display = "inline-block";
+                    document.getElementById("generate-pdf").style.display = "inline-block";
+                } else {
+                    currentPercentage++; // 퍼센트 증가
+                }
+            }, 30); // 30ms 간격으로 업데이트
+        }
+
+        // "다시 분석하기" 버튼 핸들러
+        retryBtn.addEventListener("click", () => {
+            resultSection.classList.remove("active");
+            uploadSection.classList.add("active");
+            analyzeBtn.style.display = "none";
+            imagePreview.innerHTML = "이미지를 올려주세요";
+            retryBtn.style.display = "none";
+            document.getElementById("generate-pdf").style.display = "none"; // PDF 버튼 숨기기
+            chart.style.background = "conic-gradient(#ccc 0deg 360deg)";
+            percentageText.textContent = "0";
+        });
+
+
+
+
+        /* 차트 */
+        // Pie Chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Deepfake Porn', 'Others'],
+                datasets: [{
+                    data: [98, 2],
+                    backgroundColor: ['#ff5722', '#ccc'],
+                }]
+            }
+        });
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Dedicated Deepfake Pornography', 'Mainstream Porn Websites'],
+                datasets: [{
+                    data: [90, 10],
+                    backgroundColor: ['#ff5722', '#ffc107'],
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+        document.getElementById("generate-pdf").addEventListener("click", () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // 인증서 배경 이미지 경로
+            const img = new Image();
+            img.src = './ㅁㅁ.png'; // 인증서 배경 이미지 경로를 정확히 입력해주세요.
+
+            img.onload = function () {
+                // 이미지의 원본 크기 유지
+                const imgWidth = img.width;
+                const imgHeight = img.height;
+
+                // PDF 크기 설정 (A4 기준)
+                const pageWidth = 210; // mm
+                const pageHeight = 297; // mm
+
+                // 이미지 비율 유지하면서 PDF 크기에 맞게 조정
+                const scaleFactor = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+                const scaledWidth = imgWidth * scaleFactor;
+                const scaledHeight = imgHeight * scaleFactor;
+
+                const xOffset = (pageWidth - scaledWidth) / 2; // 중앙 정렬
+                const yOffset = (pageHeight - scaledHeight) / 2;
+
+                // PDF에 이미지 추가
+                doc.addImage(img, "PNG", xOffset, yOffset, scaledWidth, scaledHeight);
+
+                try {
+                    // Base64 데이터를 jsPDF에 추가
+                    doc.addFileToVFS("NanumGothic.ttf", base64Font); // Base64 데이터를 추가
+                    doc.addFont("NanumGothic.ttf", "NanumGothic", "normal"); // 폰트 등록
+                    doc.addFileToVFS("NanumGothicBold.ttf", base64BoldFont);
+                    doc.addFont("NanumGothicBold.ttf", "NanumGothicBold", "normal");
+                    doc.setFont("NanumGothic"); // 폰트 설정
+
+                    // 인증서 제목
+
+                    doc.setFontSize(36);
+                    doc.setFont("NanumGothicBold");
+                    doc.text("인 증 서", 105, 80 + yOffset, { align: "center" }); // 중앙 상단 대문자로 표시
+
+                    // 구분선 추가
+                    doc.setDrawColor(0); // 검정색 선
+                    doc.setLineWidth(0.5);
+                    doc.line(30, 85 + yOffset, 180, 85 + yOffset); // 좌우 선 긋기
+
+                    // 주요 정보
+                    doc.setFontSize(18);
+                    doc.setFont("NanumGothic", "normal");
+                    doc.text("본 인증서는 아래의 정보를 확인합니다.", 105, 100 + yOffset, { align: "center" });
+
+                    doc.setFontSize(16);
+                    doc.text("제품 유형: 딥페이크 분석", 30, 130 + yOffset); // 왼쪽 정렬로 제품 유형
+                    doc.text("모델명: DEEPGUARD001", 30, 140 + yOffset); // 왼쪽 정렬로 모델명
+
+                    // 차트 확률 값 추가
+                    doc.text(`정확도: ${fakeProbability}%`, 30, 150 + yOffset);
+
+                    // 인증 날짜 및 유효 기간
+                    const issueDate = new Date().toLocaleDateString("ko-KR");
+                    const expiryDate = new Date();
+                    expiryDate.setDate(expiryDate.getDate() + 30);
+                    doc.text(`인증 일자: ${issueDate}`, 30, 160 + yOffset); // 왼쪽 정렬로 인증 일자
+                    doc.text(`유효기간: ${expiryDate.toLocaleDateString("ko-KR")}`, 30, 170 + yOffset);
+
+                    // 중앙 강조 문구
+                    doc.setFontSize(20);
+                    doc.setFont("NanumGothicBold");
+                    doc.text("DEEPGUARD의 모델  : DEEPGUARD001(가)", 105, 195 + yOffset, { align: "center" });
+                    doc.text("이미지를 분석했습니다.", 105, 210 + yOffset, { align: "center" });
+
+                    // 하단 안내 문구
+                    doc.setFontSize(12);
+                    doc.setFont("NanumGothic", "normal");
+                    doc.text(
+                        "이 인증서는 DEEPGUARD 분석 시스템을 통해 자동으로 생성되었습니다.",
+                        105,
+                        280 + yOffset,
+                        { align: "center" }
+                    );
+                    doc.setFont("NanumGothicBold", "normal"); // 볼드체 설정
+                    doc.setFontSize(16);
+                    doc.text(`발급 일자: ${issueDate}`, 105, 250 + yOffset, { align: "center" }); // 가운데 정렬
+
+
+                    // PDF 저장
+                    doc.save("딥페이크_분석_결과.pdf");
+                } catch (error) {
+                    console.error("PDF 생성 중 오류 발생:", error.message);
+                }
+            };
+
+            img.onerror = function () {
+                console.error("배경 이미지를 로드할 수 없습니다. 경로를 확인해주세요.");
+            };
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>
