@@ -9,6 +9,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
+
+
+
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
