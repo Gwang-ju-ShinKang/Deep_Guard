@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딥페이크 분석</title>
+    <style>
+        /* 여기에 스타일 정의 */
+    </style>
+</head>
+
+<body>
+
+    <h1>딥페이크 분석</h1>
+
+    <div class="upload-container">
+        <!-- 이미지 미리보기 -->
+        <div id="image-preview">
+            <p>이미지를 올려주세요</p>
+        </div>
+
+        <!-- 파일 업로드 버튼 -->
+        <input type="file" id="file-upload" accept="image/*">
+        <label for="file-upload" class="custom-file-upload">Upload Image</label>
+
+        <!-- SCAN 버튼 -->
+        <button id="scan-button" style="display: none;">SCAN</button>
+    </div>
+
+    <h2>결과 확인</h2>
+    <div id="result-container">
+        <h3 id="result-text">결과 : </h3>
+        <div class="chart">
+            <div class="chart-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const scanButton = document.getElementById('scan-button');
+        const resultText = document.getElementById('result-text');
+        const chartBar = document.querySelector('.chart-bar');
+
+        // 이미지 미리보기와 SCAN 버튼 표시
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                    scanButton.style.display = "inline-block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = "<p>No image uploaded yet.</p>";
+                scanButton.style.display = "none";
+            }
+        });
+
+        // SCAN 버튼 클릭 이벤트
+        scanButton.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return alert('이미지를 업로드 해주세요.');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            imagePreview.innerHTML = "<p>분석 중입니다...</p>";
+            scanButton.style.display = 'none';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`서버 오류 발생: ${response.status}`);
+                }
+
+                let result;
+                try {
+                    result = await response.json();
+                } catch (e) {
+                    throw new Error('JSON 파싱에 실패했습니다.');
+                }
+
+                console.log('결과:', result);
+                if (result.error) {
+                    throw new Error(`분석 오류: ${result.error}`);
+                }
+
+                updateChart(result.data);  // 차트에 결과 추가
+            } catch (error) {
+                console.error('에러 발생:', error.message);
+                imagePreview.innerHTML = `<p>분석에 실패했습니다. 다시 시도해주세요.</p>`;
+                scanButton.style.display = 'inline-block';
+            }
+
+        });
+
+        function updateChart(data) {
+            // 1. 데이터가 유효한지 확인
+            if (!data || data.length === 0) {
+                console.error('차트에 추가할 데이터가 없습니다.');
+                return;
+            }
+
+            // 2. 결과를 100분율로 변환하고 반올림
+            const resultPercent = data.map(value => Math.round(value * 100));  // 각 값에 100을 곱하고 반올림
+
+            // 3. 차트 그리기
+            const chartBar = document.querySelector('.chart-bar');
+            chartBar.style.background = `conic-gradient(#9986dd ${resultPercent[0]}deg, #fbb871 ${resultPercent[1] || 0}deg)`; // resultPercent[1]이 없으면 0으로 처리
+
+            // 4. 결과 텍스트 업데이트 (100분율로 표시)
+            // resultPercent[1]이 존재하면 표시, 아니면 resultPercent[0]만 표시
+            if (resultPercent[1] !== undefined) {
+                resultText.innerHTML = `결과: ${resultPercent[0]}% - ${resultPercent[1]}%`;
+            } else {
+                resultText.innerHTML = `결과: ${resultPercent[0]}%`;
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>
