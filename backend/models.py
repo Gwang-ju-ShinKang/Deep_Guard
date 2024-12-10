@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Numeric, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -53,6 +53,7 @@ class ImageBackupInfo(Base):
     created_at = Column(DateTime)
     user_id = Column(String(50), ForeignKey("user_info.user_id"))
     model_pred = Column(Numeric)
+
 
 
 
