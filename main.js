@@ -24,9 +24,7 @@ resultSection.appendChild(retryBtn);
 
 // PDF 저장 버튼 추가
 
-
-// 이미지 업로드 핸들러
-// 이미지 업로드 핸들러
+// 이미지 업로드 핸들러 (파일 선택)
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
@@ -36,6 +34,9 @@ fileInput.addEventListener("change", () => {
             analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
         };
         reader.readAsDataURL(file);
+    } else {
+        imagePreview.innerHTML = "<p>No image uploaded yet.</p>";
+        analyzeBtn.style.display = "none";
     }
 });
 
@@ -66,20 +67,49 @@ function handleFileUpload(file) {
 }
 
 // 분석 버튼 핸들러
-let fakeProbability = 0; // 정확도 값을 저장할 변수
-analyzeBtn.addEventListener('click', () => {
+analyzeBtn.addEventListener('click', async () => {
+    const file = fileInput.files[0];
+    if (!file) return alert('이미지를 업로드 해주세요.');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
     uploadSection.classList.remove('active');
     loadingSection.classList.add('active');
 
-    setTimeout(() => {
-        loadingSection.classList.remove('active');
-        resultSection.classList.add('active');
+    try {
+        const response = await fetch('http://127.0.0.1:8000/upload/', {
+            method: 'POST',
+            body: formData
+        });
 
-        // 차트 애니메이션 실행
-        fakeProbability = Math.floor(Math.random() * 101);
+        if (!response.ok) {
+            throw new Error(`서버 오류 발생: ${response.status}`);
+        }
+
+        let result;
+        try {
+            result = await response.json();
+        } catch (e) {
+            throw new Error('JSON 파싱에 실패했습니다.');
+        }
+
+        console.log('서버 응답 데이터:', result);
+
+        const fakeProbability = result.data && result.data[0] !== undefined
+            ? Math.round(result.data[0] * 100)
+            : 0;
+
         animateChart(fakeProbability);
 
-    }, 3000); // 3초 동안 로딩 상태 유지
+    } catch (error) {
+        console.error('에러 발생:', error.message);
+        imagePreview.innerHTML = `<p>분석에 실패했습니다. 다시 시도해주세요.</p>`;
+        analyzeBtn.style.display = 'inline-block';
+    } finally {
+        loadingSection.classList.remove('active');
+        resultSection.classList.add('active');
+    }
 });
 
 // 차트 애니메이션 함수
@@ -88,29 +118,26 @@ function animateChart(targetPercentage) {
     const interval = setInterval(() => {
         const angle = currentPercentage * 3.6;
 
-        // 색상 변경 로직
-        let color = "#4caf50"; // Default green
-        if (currentPercentage < 30) {
-            color = "#ff5722"; // Red for low percentages
-        } else if (currentPercentage < 70) {
-            color = "#ffc107"; // Yellow for mid percentages
-        }
+        // 색상 변경
+        let color = currentPercentage < 30 ? '#ff5722' :
+            currentPercentage < 70 ? '#ffc107' : '#4caf50';
 
-        // 차트 배경 업데이트
         chart.style.background = `conic-gradient(${color} 0deg ${angle}deg, #ccc ${angle}deg 360deg)`;
-        percentageText.textContent = currentPercentage; // 텍스트 업데이트
+        percentageText.textContent = `${currentPercentage}%`;
 
-        // 목표치에 도달하면 애니메이션 멈추기
-        if (currentPercentage >= targetPercentage) {
-            clearInterval(interval);
-
-            // "다시 분석하기"와 "PDF 저장" 버튼 표시
-            retryBtn.style.display = "inline-block";
-            document.getElementById("generate-pdf").style.display = "inline-block";
+        if (currentPercentage < targetPercentage) {
+            currentPercentage++;
         } else {
-            currentPercentage++; // 퍼센트 증가
+            clearInterval(interval);
+            retryBtn.textContent = "다시 분석하기";
+            retryBtn.style.display = "inline-block";
+            resultSection.appendChild(retryBtn);
+
+            pdfButton.textContent = "PDF 저장";
+            pdfButton.style.display = "inline-block";
+            resultSection.appendChild(pdfButton);
         }
-    }, 30); // 30ms 간격으로 업데이트
+    }, 30);
 }
 
 // "다시 분석하기" 버튼 핸들러
