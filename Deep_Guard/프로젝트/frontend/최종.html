@@ -21,7 +21,46 @@
         }
     </style>
     <link rel="stylesheet" href="최종.css">
-    
+    <script>
+        // 페이지 로드 시 세션 확인
+        async function checkSession() {
+            try {
+                // 세션 확인 요청
+                const response = await fetch("http://127.0.0.1:8000/get-session", {
+                    method: "GET",
+                    credentials: "include", // 쿠키 전송을 허용
+                });
+
+                // 세션이 없는 경우
+                if (response.status === 400) {
+                    console.log("세션 없음, 세션 생성 중...");
+                    const createResponse = await fetch("http://127.0.0.1:8000/create-session", {
+                        method: "GET",
+                        credentials: "include", // 쿠키 전송 허용
+                    });
+
+                    if (!createResponse.ok) {
+                        throw new Error("세션 생성 실패");
+                    }
+
+                    const createData = await createResponse.json();
+                    console.log("세션 생성 완료:", createData.session_id);
+                } else if (response.ok) {
+                    // 세션이 있는 경우
+                    const data = await response.json();
+                    console.log("세션 확인 완료:", data);
+
+                } else {
+                    throw new Error(`알 수 없는 상태 코드: ${response.status}`);
+                }
+            } catch (error) {
+                console.error("세션 처리 중 오류:", error.message);
+            }
+        }
+        // 페이지 로드 시 실행
+        window.onload = checkSession;
+    </script>
+
 </head>
 
 <body>
@@ -172,16 +211,16 @@
                 <div class="card3">
                     <img src="image/ㅇㅇ.png" alt="Icon">
                     <h2>방송통신 심의 위원회</h3>
-                    <p>개인정보·타인의 사진(영상) 유포 및 명예훼손 삭제·차단</p>
-                    <a href="https://remedy.kocsc.or.kr/ddms/req/viewReqRevwGuide.do">자세히 보기</a>
+                        <p>개인정보·타인의 사진(영상) 유포 및 명예훼손 삭제·차단</p>
+                        <a href="https://remedy.kocsc.or.kr/ddms/req/viewReqRevwGuide.do">자세히 보기</a>
                 </div>
                 <div class="card3">
                     <img src="image/zxzx.png" alt="Icon">
                     <h2>사이버 폭력 신고</h3>
-                    <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스.</p>
-                    <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
+                        <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스.</p>
+                        <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
                 </div>
-            
+
     </main>
 
 
@@ -200,10 +239,6 @@
     <script src="./NanumGothicBase64Bold.js"></script>
     <script src="./NanumGothicBase64.js"></script>
     <script src="최종.js"></script>
-    <script>
-        
-    </script>
-
 </body>
 
 </html>
