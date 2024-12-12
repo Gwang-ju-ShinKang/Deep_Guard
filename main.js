@@ -152,9 +152,6 @@ retryBtn.addEventListener("click", () => {
     percentageText.textContent = "0";
 });
 
-
-
-
 /* 차트 */
 const pieCtx = document.getElementById('pieChart').getContext('2d');
 new Chart(pieCtx, {
@@ -214,6 +211,7 @@ new Chart(barCtx, {
         }
     }
 });
+
 document.getElementById("generate-pdf").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
