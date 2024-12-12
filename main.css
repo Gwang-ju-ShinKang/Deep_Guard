@@ -5,44 +5,118 @@ body {
     padding: 0;
 }
 
+html, body {
+    height: 100%; /* 전체 페이지의 높이를 100%로 설정 */
+    margin: 0;    /* 기본 마진 제거 */
+}
+
 .header {
     position: fixed;
-    /* 헤더를 화면 상단에 고정 */
     top: 0;
     left: 0;
     width: 100%;
-    /* 화면 전체 너비 */
     background-color: white;
-    /* 배경색 */
     z-index: 1000;
-    /* 다른 요소 위에 표시 */
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 25px;
-    border-bottom: 6.6px solid black;
-    /* 구분선 */
+    padding: clamp(10px, 2vw, 30px) clamp(15px, 4vw, 50px);
+    /* 비율로 변경 */
+    border-bottom: clamp(2px, 0.6vw, 6px) solid black;
+    /* rem 단위로 변경 */
+    box-sizing: border-box;
+    /* 패딩, 테두리를 포함한 전체 크기 계산 */
+
+}
+
+.header a,
+.header nav {
+    font-size: 1.6rem;
+    /* 기본 폰트 크기 */
+    text-decoration: none;
+    color: black;
+    transition: font-size 0.2s ease-in-out;
+    /* 부드러운 변화 */
 }
 
 .header .logo {
 
     text-decoration: none;
-    font-size: 300%;
+    font-size: clamp(1.8rem, 3vw, 3rem);
     font-weight: bold;
 }
 
 .header a {
-    text-decoration-line: none;
     text-decoration: none;
     color: black;
 }
 
 .header nav a {
-    padding-right: 100px;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    padding-right: clamp(10px, 5vw, 50px);
     text-decoration: none;
     color: #333;
-    font-size: 150%;
     cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .header {
+        padding: 2% 3%;
+        border-bottom: 0.35rem solid black;
+    }
+
+    .header .logo {
+        font-size: 2.5rem;
+        /* 작은 화면에서는 글씨 크기 줄이기 */
+    }
+
+    .header nav a {
+        font-size: 1.3rem;
+        /* 글씨 크기 축소 */
+        padding-right: 4vw;
+        /* 여백 조절 */
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1.5% 2.5%;
+        border-bottom: 0.3rem solid black;
+    }
+
+    .header .logo {
+        font-size: 2rem;
+        /* 더 작은 화면에서는 글씨 크기 더 축소 */
+    }
+
+    .header nav a {
+        font-size: 1.2rem;
+        /* 글씨 크기 축소 */
+        padding-right: 3vw;
+        /* 여백도 더 줄임 */
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 1% 2%;
+        border-bottom: 0.25rem solid black;
+        flex-direction: column;
+        /* 모바일 화면에서는 세로 정렬 */
+    }
+
+    .header .logo {
+        font-size: 1.8rem;
+        /* 모바일 화면에서는 로고 더 작게 */
+    }
+
+    .header nav a {
+        font-size: 1rem;
+        /* 글씨 크기 축소 */
+        padding-right: 2vw;
+        /* 여백 축소 */
+    }
 }
 
 .container {
@@ -50,52 +124,79 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 40px;
-    /* 헤더의 높이를 고려해 여백 추가 */
-    margin-top: 60px;
-    /* 헤더와 겹치지 않도록 */
-
+    padding: clamp(20px, 5vw, 40px);
+    margin-top: 60px;  /* 헤더 아래로 간격 설정 */
+    gap: 20px;
+    box-sizing: border-box;
+    height: calc(100vh - -125px);  /* 헤더를 제외한 나머지 공간을 채우도록 설정 */
 }
 
 .text-content {
-    max-width: 50%;
-    padding-bottom: 25%;
-    padding-left: 5%;
+    position : relative;
+    top : 30%;
+    left : 16%;
+    flex: 0 0 30%;  /* 텍스트가 30% 차지 */
+    max-width: 30%;  /* 텍스트 최대 너비 30% */
+    padding: 0 clamp(10px, 2vw, 5%);
+    height: 100%;  /* 텍스트 높이를 100%로 설정 */
+    overflow: hidden;
 }
 
+
 .text-content h1 {
-    font-size: 50px;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); 
     margin: 0;
 }
 
 .text-content p {
-    margin: 20px 0;
-    font-size: 18px;
+    margin: clamp(10px, 3vw, 20px) 0;
+    font-size: clamp(0.9rem, 1.8vw, 1.1rem); 
     color: #555;
 }
 
 .text-content .button {
     display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
+    margin-top: clamp(10px, 3vw, 20px); 
+    padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px); 
+    font-size: clamp(0.8rem, 2vw, 1rem); 
     text-decoration: none;
     color: white;
     background-color: #4A5246;
-    border-radius: 5px;
+    border-radius: clamp(4px, 1vw, 5px); 
 }
 
 .image-content {
-    padding-right: 5%;
+    flex: 0 0 70%;  /* 이미지가 70% 차지 */
+    max-width: 70%;  /* 이미지 최대 너비 70% */
+    display: flex;
+    justify-content: center;
+    height: 100%;  /* 이미지 높이를 100%로 설정 */
 }
 
 .image-content img {
-    width: 100%;
-    max-width: 1000px;
-    height: auto;
-    border-radius: 10px;
-    padding-right: 50px;
+    width: 90%;
+    height: 106%;  /* 부모 요소의 높이에 맞게 이미지 크기 조정 */
+    object-fit: cover;  /* 이미지 비율을 유지하면서 화면에 맞게 조정 */
+    border-radius: clamp(8px, 1vw, 10px);
+}
 
+@media (max-width: 768px) {
+    .container {
+        flex-wrap: wrap; /* 화면이 작아지면 위아래로 배치 */
+    }
+
+    .text-content, .image-content {
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .text-content h1 {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .text-content p {
+        font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+    }
 }
 
 main {
@@ -122,7 +223,7 @@ main p {
 
 .section {
     width: 50%;
-    height: 700px;
+    height: 46.5rem;
     text-align: center;
     background-color: #fff;
     padding: 20px;
