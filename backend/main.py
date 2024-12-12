@@ -1,12 +1,14 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException,Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from tensorflow.keras.models import load_model
+from PIL import Image
+from fastapi.responses import JSONResponse
 import uvicorn
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.models import load_model
-from PIL import Image
 import io
-from fastapi.responses import JSONResponse
+import os
 
 app = FastAPI()
 
@@ -19,13 +21,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 모델 로드
-MODEL_PATH = "C:/Users/smhrd/Desktop/git/Deep_Guard/model/my_model_V1.h5"
+# 의존성 주입: 데이터베이스 세션 생성
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# API 엔드포인트: 모든 데이터 가져오기
+@app.get("/items")
+def read_items(db: Session = Depends(get_db)):
+    items = db.query(UserInfo).all()
+    return items
+
+#import os
+import tensorflow as tf
+
+# 프로젝트의 루트 경로를 base_dir로 설정 (현재 파일의 상위 디렉터리로 이동)
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # 현재 파일의 상위 디렉터리로 이동
+model_path = os.path.join(base_dir, 'Model', 'Xception_model_V1.h5')  # Model 폴더로 경로 생성
+print(f"🔍 모델 경로: {model_path}")  # 디버깅을 위해 경로 확인
+
 try:
-    model = load_model(MODEL_PATH)
-    print(f"✅ 모델이 성공적으로 로드되었습니다. (입력 형태: {model.input_shape})")
+    model = tf.keras.models.load_model(model_path)
+    print(f"✅ 모델이 성공적으로 로드되었습니다! (입력 형태: {model.input_shape})")
+except FileNotFoundError as e:
+    print(f"❌ 파일을 찾을 수 없습니다. 경로를 확인하세요: {model_path}")
 except Exception as e:
-    print(f"❌ 모델 로드 실패: {e}")
+    print(f"❌ 모델 로드 중 알 수 없는 오류가 발생했습니다: {e}")
     model = None  # 모델 로드 실패시 None으로 설정
 
 
