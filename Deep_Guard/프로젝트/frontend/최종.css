@@ -232,7 +232,9 @@ main p {
 }
 
 #submain {
-    height: 100px;
+    height: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     background-image: linear-gradient(to bottom, #f8f8f8, #c9c2c2);
 }
 
@@ -331,7 +333,9 @@ main p {
 
 /* 메인3 */
 #submain2 {
-    height: 100px;
+    height: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     background-image: linear-gradient(to bottom, #c9c2c2, #adadad);
 }
 
@@ -359,6 +363,7 @@ main p {
 .header3 h1 {
     font-size: 1.8rem;
     margin: 0;
+    text-align: center;
 }
 
 .breadcrumb {
