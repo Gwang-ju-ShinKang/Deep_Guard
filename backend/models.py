@@ -6,17 +6,6 @@ from datetime import datetime
 
 Base = declarative_base()
 
-# 사용자 정보 테이블
-class UserInfo(Base):
-    __tablename__ = "user_info"
-
-    user_id = Column(String(50), primary_key=True, index=True)
-    user_pw = Column(String(128))
-    user_contact = Column(String(20))
-    user_type = Column(String(10))
-    joined_at = Column(DateTime)
-
-
 # 파일 업로드 테이블
 class UploadInfo(Base):
     __tablename__ = "upload_info"
@@ -26,33 +15,30 @@ class UploadInfo(Base):
     deepfake_data = Column(Text, nullable=False)  # MEDIUMTEXT
     model_pred = Column(DECIMAL(13, 10), nullable=False)  # DECIMAL(13,10)
     created_at = Column(TIMESTAMP, nullable=False, default=datetime.utcnow)  # TIMESTAMP
-    session_idx = Column(Integer, nullable=False)  # INT
+    session_idx = Column(Integer, ForeignKey('session_info.session_idx'), nullable=False)  # INT
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
 # 이미지 업로드 백업 테이블 
 class ImageBackupInfo(Base):
-    __tablename__ = "Image_backup_info"
+    __tablename__ = "image_backup_info"
 
-    backup_idx = Column(BigInteger, primary_key=True, index=True)
-    original_image_file = Column(String(1000))
-    image_data = Column(Text)
-    deepfake_data = Column(Text)
-    log_device = Column(String(50))
-    log_session = Column(String(300))
-    created_at = Column(DateTime)
-    user_id = Column(String(50), default="anonymous")
-    model_pred = Column(Numeric)
+    imgage_idx = Column(BigInteger, primary_key=True, index=True)
+    deepfake_image_file = Column(Text)
+    deepfake_data = Column(Text nullable=False)
+    session_idx = Column(Integer ForeignKey('session_info.session_idx'), nullable=False)
+    created_at = Column(DateTime nullable=False)
+    model_pred = Column(Numeric nullable=False)
 
 # session info 테이블
 class SessionInfo(Base):
     __tablename__ = "session_info"
 
     session_idx = Column(Integer, primary_key=True, autoincrement=True)  # session_idx를 기본 키로 설정
-    log_device = Column(String, nullable=False)
-    session_id = Column(String, nullable=False)
+    log_device = Column(Text, nullable=False)
+    session_id = Column(Text, nullable=False)
     session_created_at = Column(DateTime, nullable=False)
-    session_active_duration = Column(Integer, nullable=False)  # 초 단위
     session_expire_dt = Column(DateTime, nullable=False)
+    session_active_duration = Column(DateTime, nullable=False)  # 초 단위
     
 
 

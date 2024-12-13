@@ -22,8 +22,6 @@ retryBtn.style.marginRight = "20px";
 retryBtn.style.display = "none";
 resultSection.appendChild(retryBtn);
 
-// PDF 저장 버튼 추가
-
 // 이미지 업로드 핸들러 (파일 선택)
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -152,9 +150,6 @@ retryBtn.addEventListener("click", () => {
     percentageText.textContent = "0";
 });
 
-
-
-
 /* 차트 */
 const pieCtx = document.getElementById('pieChart').getContext('2d');
 new Chart(pieCtx, {
@@ -214,6 +209,7 @@ new Chart(barCtx, {
         }
     }
 });
+
 document.getElementById("generate-pdf").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -316,3 +312,85 @@ function goToScroll(name) {
     var location = document.querySelector("#" + name).offsetTop;
     window.scrollTo({ top: location - 50 });
 }
+
+// 범죄 예방 수칙 온클릭 이벤트
+document.querySelectorAll('.rule h2').forEach((title) => {
+    title.addEventListener('click', () => {
+        const content = title.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
+});
+
+ // 페이지 로드 시 세션 확인
+ async function checkSession() {
+    try {
+        // 세션 확인 요청
+        const response = await fetch("http://127.0.0.1:8000/get-session", {
+            method: "GET",
+            credentials: "include", // 쿠키 전송을 허용
+        });
+
+        // 세션이 없는 경우
+        if (response.status === 400) {
+            console.log("세션 없음, 세션 생성 중...");
+            const createResponse = await fetch("http://127.0.0.1:8000/create-session", {
+                method: "GET",
+                credentials: "include", // 쿠키 전송 허용
+            });
+
+            if (!createResponse.ok) {
+                throw new Error("세션 생성 실패");
+            }
+
+            const createData = await createResponse.json();
+            console.log("세션 생성 완료:", createData.session_id);
+        } else if (response.ok) {
+            // 세션이 있는 경우
+            const data = await response.json();
+            console.log("세션 확인 완료:", data);
+
+        } else {
+            throw new Error(`알 수 없는 상태 코드: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("세션 처리 중 오류:", error.message);
+    }
+}
+
+async function sendDeviceInfoToServer() {
+    const deviceInfo = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+    };
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/device-info/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(deviceInfo),
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Server Response:", result);
+        } else {
+            console.error("Failed to send device info:", response.status);
+        }
+    } catch (error) {
+        console.error("Error sending device info:", error);
+    }
+}
+
+// 페이지 로드 시 실행
+window.onload = () => {
+    checkSession();
+    sendDeviceInfoToServer();
+};
