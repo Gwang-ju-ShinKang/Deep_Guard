@@ -390,3 +390,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+// 범죄 예방 수칙 온클릭 이벤트
+function goToScrollEventHandler() {
+    document.querySelectorAll('.rule h2').forEach((title) => {
+        title.addEventListener('click', () => {
+            const content = title.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    });
+};
+
