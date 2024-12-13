@@ -21,7 +21,7 @@
         }
     </style>
     <link rel="stylesheet" href="./main.css">
-    
+
 </head>
 
 <body>
@@ -34,6 +34,7 @@
             <a href="#1">분석하기</a>
             <a onclick="goToScroll('main2')">딥페이크 현황</a>
             <a onclick="goToScroll('main3')">신고센터</a>
+            <a onclick="goToScroll('main4')">범죄예방수칙</a>
         </nav>
     </div>
     <!-- Main Content -->
@@ -78,56 +79,56 @@
         </div>
     </main>
 
-    <main id="submain"></main>
-
     <main id="main2">
-        <div class="container2">
+        <div class="containert">
             <!-- Header -->
             <div class="header2">
                 <h1>대한민국 딥페이크 현황</h1>
             </div>
 
-            <!-- Card 1: 딥페이크 포르노 비율 -->
-            <div class="card large">
-                <canvas id="pieChart"></canvas>
-                <div>
-                    <p class="highlight">85%</p>
-                    <p class="subtext">딥페이크 포르노가 전체 딥페이크 콘텐츠의 85%를 차지</p>
+            <div class="container2">
+                <!-- Card 1: 딥페이크 포르노 비율 -->
+                <div class="card large pieCard">
+                    <canvas id="pieChart"></canvas>
+                    <div>
+                        <p class="highlight">85%</p>
+                        <p class="subtext">딥페이크 포르노가 전체 딥페이크 콘텐츠의 85%를 차지</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Card 2: 딥페이크 피해 신고 총계 -->
-            <div class="card">
-                <p class="highlight">1,000건</p>
-                <p class="subtext">2024년 딥페이크 피해 신고 총 건수</p>
-            </div>
+                <!-- Card 2: 딥페이크 피해 신고 총계 -->
+                <div class="card">
+                    <p class="highlight">1,000건</p>
+                    <p class="subtext">2024년 딥페이크 피해 신고 총 건수</p>
+                </div>
 
-            <!-- Card 3: 피해자 연령대 -->
-            <div class="card">
-                <p class="highlight">80%</p>
-                <p class="subtext">딥페이크 피해자 중 30세 미만 비율</p>
-            </div>
+                <!-- Card 3: 피해자 연령대 -->
+                <div class="card">
+                    <p class="highlight">80%</p>
+                    <p class="subtext">딥페이크 피해자 중 30세 미만 비율</p>
+                </div>
 
-            <!-- Card 4: 주요 타깃 -->
-            <div class="card">
-                <p class="highlight">90%</p>
-                <p class="subtext">딥페이크 주요 타깃 상위 10명 중 여성 연예인 비율</p>
-            </div>
+                <!-- Card 4: 주요 타깃 -->
+                <div class="card">
+                    <p class="highlight">90%</p>
+                    <p class="subtext">딥페이크 주요 타깃 상위 10명 중 여성 연예인 비율</p>
+                </div>
 
-            <!-- Card 5: 탐지 도구 채택률 -->
-            <div class="card">
-                <p class="highlight">300%</p>
-                <p class="subtext">2020년 이후 딥페이크 탐지 도구 사용률 증가율</p>
-            </div>
+                <!-- Card 5: 탐지 도구 채택률 -->
+                <div class="card">
+                    <p class="highlight">300%</p>
+                    <p class="subtext">2020년 이후 딥페이크 탐지 도구 사용률 증가율</p>
+                </div>
 
-            <!-- Card 6: 딥페이크 콘텐츠 분포 -->
-            <div class="card large">
-                <canvas id="barChart"></canvas>
-                <p class="subtext">카테고리별 딥페이크 콘텐츠 분포</p>
+                <!-- Card 6: 딥페이크 콘텐츠 분포 -->
+                <div class="card large pieCard">
+                    <canvas id="barChart"></canvas>
+                    <p class="subtext">카테고리별 딥페이크 콘텐츠 분포</p>
+                </div>
             </div>
         </div>
     </main>
-    <main id="submain2"></main>
+
     <main id="main3">
         <div class="container3" id="3">
             <div class="header3">
@@ -172,18 +173,97 @@
                 <div class="card3">
                     <img src="image/ㅇㅇ.png" alt="Icon">
                     <h2>방송통신 심의 위원회</h3>
-                    <p>개인정보·타인의 사진(영상) 유포 및 명예훼손 삭제·차단</p>
-                    <a href="https://remedy.kocsc.or.kr/ddms/req/viewReqRevwGuide.do">자세히 보기</a>
+                        <p>개인정보·타인의 사진(영상) 유포 및 명예훼손 삭제·차단</p>
+                        <a href="https://remedy.kocsc.or.kr/ddms/req/viewReqRevwGuide.do">자세히 보기</a>
                 </div>
                 <div class="card3">
                     <img src="image/zxzx.png" alt="Icon">
                     <h2>사이버 폭력 신고</h3>
-                    <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스.</p>
-                    <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
+                        <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스.</p>
+                        <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
                 </div>
-            
+            </div>
+        </div>
     </main>
+    <main id="main4" class="content">
+        <div class="rules-container">
+            <!-- Column 1 (1~4) -->
+            <div class="header3">
+                <h1>범죄 예방 수칙</h1>
+            </div>
 
+            <div class="column">
+                <section class="rule">
+                    <h2>1. 개인정보 보호</h2>
+                    <ul>
+                        <li>SNS 및 이메일에 민감한 개인정보를 공개하지 마세요.</li>
+                        <li>강력한 비밀번호를 사용하고 정기적으로 변경하세요.</li>
+                        <li>중요한 계정에 2단계 인증을 활성화하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>2. 딥페이크와 허위 정보 감별</h2>
+                    <ul>
+                        <li>의심스러운 동영상이나 이미지는 검증 도구를 활용하세요.</li>
+                        <li>출처가 불분명한 콘텐츠는 공유 전에 신뢰도를 확인하세요.</li>
+                        <li>유명인 관련 콘텐츠의 편집 여부를 의심하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>3. 악성 링크와 피싱 방지</h2>
+                    <ul>
+                        <li>출처를 알 수 없는 링크는 클릭하지 마세요.</li>
+                        <li>의심스러운 이메일의 발신자를 확인하세요.</li>
+                        <li>금융정보를 요청하는 메시지는 신뢰성을 확인하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>4. 안전한 소프트웨어 사용</h2>
+                    <ul>
+                        <li>정품 소프트웨어와 인증된 앱만 사용하세요.</li>
+                        <li>소프트웨어와 운영체제를 주기적으로 업데이트하세요.</li>
+                        <li>신뢰할 수 있는 안티바이러스 프로그램을 설치하세요.</li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Column 2 (5~8) -->
+            <div class="column">
+                <section class="rule">
+                    <h2>5. 자녀 및 가족의 디지털 안전</h2>
+                    <ul>
+                        <li>자녀와 딥페이크 위험성에 대해 대화하세요.</li>
+                        <li>가족과 신뢰할 수 있는 온라인 행동 수칙을 정하세요.</li>
+                        <li>소셜 미디어 이용 시간을 적절히 관리하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>6. 온라인 소통 시 주의점</h2>
+                    <ul>
+                        <li>낯선 사람과 민감한 정보를 공유하지 마세요.</li>
+                        <li>공공 장소에서만 만남을 약속하세요.</li>
+                        <li>위협적인 메시지는 스크린샷을 저장하고 신고하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>7. 딥페이크 대응 방법</h2>
+                    <ul>
+                        <li>피해가 의심되면 즉시 검증 도구를 사용하세요.</li>
+                        <li>피해를 입은 경우 관련 기관에 신고하세요.</li>
+                        <li>플랫폼의 신고 기능을 활용하세요.</li>
+                    </ul>
+                </section>
+                <section class="rule">
+                    <h2>8. 정기적인 보안 점검</h2>
+                    <ul>
+                        <li>계정 로그인을 정기적으로 확인하세요.</li>
+                        <li>개인 정보가 포함된 파일은 안전하게 백업하세요.</li>
+                        <li>인터넷 사용 습관을 점검하세요.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
 
     <footer class="footer">
         <p>&copy; (주) Deep Guard</p>
@@ -200,7 +280,7 @@
     <script src="./Font/NanumGothicBase64.js"></script>
     <script src="./main.js"></script>
     <script>
-        
+
     </script>
 
 </body>

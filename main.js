@@ -314,3 +314,15 @@ function goToScroll(name) {
     var location = document.querySelector("#" + name).offsetTop;
     window.scrollTo({ top: location - 50 });
 }
+
+// 범죄 예방 수칙 온클릭 이벤트
+document.querySelectorAll('.rule h2').forEach((title) => {
+    title.addEventListener('click', () => {
+        const content = title.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
+});
