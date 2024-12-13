@@ -13,6 +13,7 @@ const chart = document.getElementById('chart');
 const percentageText = document.getElementById('percentage');
 const retryBtn = document.createElement('button');
 const pdfButton = document.createElement('button');
+const consentSection = document.getElementById("consent-section");
 
 // "다시 분석하기" 버튼 추가
 retryBtn.textContent = "다시 분석하기";
@@ -26,7 +27,6 @@ resultSection.appendChild(retryBtn);
 
 
 // 이미지 업로드 핸들러
-// 이미지 업로드 핸들러
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
@@ -34,6 +34,7 @@ fileInput.addEventListener("change", () => {
         reader.onload = (e) => {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
             analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+            consentSection.style.display = "block"; // 동의 체크박스 표시
         };
         reader.readAsDataURL(file);
     }
@@ -50,6 +51,7 @@ imagePreview.addEventListener("paste", (event) => {
             if (file) {
                 handleFileUpload(file);
                 analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+                consentSection.style.display = "block"; // 동의 체크박스 표시
             }
         }
     }
@@ -60,7 +62,7 @@ function handleFileUpload(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
         imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-        generatePdfButton.style.display = "inline-block"; // PDF 저장 버튼 표시
+        analyzeBtn.style.display = "inline-block";; // PDF 저장 버튼 표시
     };
     reader.readAsDataURL(file);
 }
@@ -118,10 +120,11 @@ retryBtn.addEventListener("click", () => {
     resultSection.classList.remove("active");
     uploadSection.classList.add("active");
     analyzeBtn.style.display = "none";
-    imagePreview.innerHTML = "이미지를 올려주세요";
+    imagePreview.innerHTML = "이미지를 올려주세요 또는 Ctrl+ V";
     retryBtn.style.display = "none";
     document.getElementById("generate-pdf").style.display = "none"; // PDF 버튼 숨기기
     chart.style.background = "conic-gradient(#ccc 0deg 360deg)";
+    consentSection.style.display = "none"; // 동의 섹션 숨김
     percentageText.textContent = "0";
 });
 
@@ -289,3 +292,101 @@ function goToScroll(name) {
     var location = document.querySelector("#" + name).offsetTop;
     window.scrollTo({ top: location - 50 });
 }
+
+
+// upload
+document.addEventListener("DOMContentLoaded", () => {
+    const fileInput = document.getElementById("file-upload");
+    const analyzeButton = document.getElementById("analyze-btn");
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    const imagePreview = document.getElementById("image-preview");
+    const uploadSection = document.getElementById("upload-section");
+    const loadingSection = document.getElementById("loading-section");
+    const resultSection = document.getElementById("result-section");
+    const percentageSpan = document.getElementById("percentage");
+
+    // 동의 체크박스 클릭 시 알림
+    assentCheckbox.addEventListener("change", () => {
+        if (assentCheckbox.checked) {
+            const now = new Date();
+            alert(`약관에 동의하셨습니다. 동의 시간: ${now.toLocaleString()}`);
+        } else {
+            alert("약관 동의를 해제하셨습니다.");
+        }
+    });
+
+    // 세션 ID 가져오기 함수
+    async function getSessionIdx() {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/session", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                const sessionData = await response.json();
+                return sessionData.session_idx; // 응답 구조에 맞게 수정
+            } else {
+                console.error("세션 정보 가져오기 실패:", response.status);
+                return null;
+            }
+        } catch (error) {
+            console.error("세션 정보 요청 중 오류:", error);
+            return null;
+        }
+    }
+
+    // Analyze 버튼 클릭 이벤트
+    analyzeButton.addEventListener("click", async () => {
+        if (fileInput.files.length === 0) {
+            alert("이미지를 업로드해주세요.");
+            return;
+        }
+
+        const assent_yn = assentCheckbox.checked ? "Y" : "N";
+        if (assent_yn === "N") { // 동의하지 않은 경우 처리
+            alert("동의하지 않으면 데이터를 저장할 수 없습니다.");
+            return;
+        }
+
+        // 세션 ID 가져오기
+        const session_idx = await getSessionIdx();
+        if (!session_idx) {
+            alert("세션 정보를 가져오는 데 실패했습니다. 다시 시도해주세요.");
+            return;
+        }
+
+        // 로딩 상태 활성화
+        loadingSection.classList.add("active");
+
+        // FormData 생성
+        const formData = new FormData();
+        formData.append("image_file", fileInput.files[0]);
+        formData.append("assent_yn", assent_yn);
+        formData.append("model_pred", "0.987654321");
+        formData.append("session_idx", session_idx); // 세션 ID 추가
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/upload", {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("서버 응답:", result);
+
+            // 분석 결과 표시
+            loadingSection.classList.remove("active"); // 로딩 종료
+            resultSection.classList.add("active");
+            percentageSpan.textContent = (result.model_pred * 100).toFixed(2); // 결과 표시
+        } catch (error) {
+            console.error("업로드 중 오류:", error);
+            alert("업로드 실패. 서버와 연결할 수 없습니다.");
+        }
+    });
+});
