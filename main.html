@@ -21,7 +21,6 @@
         }
     </style>
     <link rel="stylesheet" href="./main.css">
-
 </head>
 
 <body>
@@ -52,30 +51,31 @@
 
     <main id="1">
         <!-- Upload Section -->
-        <div class="section active" id="upload-section">
-            <h2>딥페이크 이미지 분석하기</h2>
-            <br>
-            <div class="upload-container" id="image-preview">
-                이미지를 올려주세요 또는 Ctrl+ V
+        <div class="mainMove">
+            <div class="section active" id="upload-section">
+                <h2>딥페이크 이미지 분석하기</h2>
+                <br>
+                <div class="upload-container" id="image-preview">
+                    이미지를 올려주세요 또는 Ctrl+ V
+                </div>
+                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                <label for="file-upload" class="upload-btn">Upload Photo</label>
+                <button id="analyze-btn" class="upload-btn" style="display: none;">Analyze</button>
             </div>
-            <input type="file" id="file-upload" accept="image/*" style="display: none;">
-            <label for="file-upload" class="upload-btn">Upload Photo</label>
-            <button id="analyze-btn" class="upload-btn" style="display: none;">Analyze</button>
-        </div>
 
-        <!-- Loading Section -->
-        <div class="section" id="loading-section">
-            <h2>분석 중...</h2>
-            <div class="analyzing">Analyzing image, please wait...</div>
-        </div>
+            <!-- Loading Section -->
+            <div class="section" id="loading-section">
+                <h2>분석 중...</h2>
+                <div class="analyzing">Analyzing image, please wait...</div>
+            </div>
 
-        <!-- Result Section -->
-        <div class="section" id="result-section">
-            <h2>결과 확인</h2><br>
-            <div class="chart" id="chart"></div>
-            <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span></p>
-            <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
-
+            <!-- Result Section -->
+            <div class="section" id="result-section">
+                <h2>결과 확인</h2><br>
+                <div class="chart" id="chart"></div>
+                <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span></p>
+                <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
+            </div>
         </div>
     </main>
 
@@ -88,12 +88,18 @@
 
             <div class="container2">
                 <!-- Card 1: 딥페이크 포르노 비율 -->
-                <div class="card large pieCard">
+                <div class="card pieCard large">
                     <canvas id="pieChart"></canvas>
                     <div>
-                        <p class="highlight">85%</p>
-                        <p class="subtext">딥페이크 포르노가 전체 딥페이크 콘텐츠의 85%를 차지</p>
+                        <p class="highlight highlight2">85%</p>
+                        <!-- <p class="subtext">딥페이크 포르노가 전체 딥페이크 콘텐츠의 85%를 차지</p> -->
                     </div>
+                </div>
+
+                <!-- Card 6: 딥페이크 콘텐츠 분포 -->
+                <div class="card large">
+                    <canvas id="barChart"></canvas>
+                    <p class="subtext">카테고리별 딥페이크 콘텐츠 분포</p>
                 </div>
 
                 <!-- Card 2: 딥페이크 피해 신고 총계 -->
@@ -120,11 +126,6 @@
                     <p class="subtext">2020년 이후 딥페이크 탐지 도구 사용률 증가율</p>
                 </div>
 
-                <!-- Card 6: 딥페이크 콘텐츠 분포 -->
-                <div class="card large pieCard">
-                    <canvas id="barChart"></canvas>
-                    <p class="subtext">카테고리별 딥페이크 콘텐츠 분포</p>
-                </div>
             </div>
         </div>
     </main>
@@ -279,10 +280,6 @@
     <script src="./Font/NanumGothicBase64Bold.js"></script>
     <script src="./Font/NanumGothicBase64.js"></script>
     <script src="./main.js"></script>
-    <script>
-
-    </script>
-
 </body>
 
 </html>

@@ -227,7 +227,7 @@ main {
 }
 
 main h2 {
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
     margin-bottom: 20px;
 }
 
@@ -236,14 +236,21 @@ main p {
     color: #666;
 }
 
-.section {
-    width: 65rem;
-    height: 46.5rem;
-    text-align: center;
+.mainMove {
+    position: relative;
+    height: 52rem;
+    bottom: 3rem;
+    width: 70vw;
     background-color: #fff;
-    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+    position: relative;
+    bottom: -6.5rem;
+    text-align: center;
+    padding: 20px;
     display: none;
 }
 
@@ -252,9 +259,17 @@ main p {
 }
 
 .upload-container {
+    position: relative;
+    bottom: 2.5rem;
     margin: 20px auto;
-    width: 400px;
-    height: 400px;
+    width: 70vw;
+    /* 뷰포트 너비의 80% */
+    height: 80vw;
+    /* 뷰포트 너비의 80%로 설정하여 비율 유지 */
+    max-height: 400px;
+    /* 뷰포트 높이의 80%로 제한 */
+    max-width: 400px;
+    /* 최대 너비를 400px로 제한 */
     border: 2px dashed #ccc;
     border-radius: 10px;
     display: flex;
@@ -262,6 +277,7 @@ main p {
     align-items: center;
     background-color: #f9f9f9;
     color: #777;
+
 }
 
 .upload-container img {
@@ -354,30 +370,40 @@ main p {
 
 /* 메인 2 */
 #main2 {
+    position: relative;
+    top: -16rem;
     padding: 2vw;
     background-color: #c9c2c2;
     padding-bottom: 8%;
 }
-.containert{
-    max-width: 80vw;
+
+.containert {
+    position: relative;
+    top: 2rem;
+    max-width: 70vw;
+    margin: 0 auto;
 }
+
 .container2 {
     max-width: 90vw;
-    margin: 0 auto;
-    padding: 2vw;
+    margin: 0px auto;
+    padding: 0vw;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2vw;
 }
 
 .header2 {
-    margin-left: 1.8rem;
-    max-width: 94.5%;
-    margin-top : -1.5rem;
+    position: relative;
+    bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-bottom: 2px solid #ddd;
 }
 
 .header2 h1 {
+    max-width: 90%;
     margin-bottom: 0.3rem;
     font-size: clamp(1.5rem, 2vw, 2.5rem);
     color: #333;
@@ -387,7 +413,7 @@ main p {
     background: white;
     border-radius: 8px;
     box-shadow: 0 0.4vw 0.6vw rgba(0, 0, 0, 0.1);
-    padding: 2vw;
+    padding: 1vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -396,12 +422,13 @@ main p {
 }
 
 .card.large {
+    max-width: 32rem;
+    height: 24.5rem;
     grid-column: span 2;
     display: grid;
-    grid-template-rows: 1fr 1fr;
-    /* 파이차트와 bar chart를 세로로 배치 */
-    gap: 2vw;
-    padding: 2vw;
+    grid-template-rows: 1fr auto;
+    gap: 1vw;
+    padding: 0rem;
     align-items: center;
     justify-content: center;
 }
@@ -411,6 +438,13 @@ main p {
     font-weight: bold;
     color: #ff5722;
     text-align: center;
+}
+
+.highlight2 {
+    position: relative;
+    bottom: 17rem;
+    color: white;
+    left: 1rem;
 }
 
 .subtext {
