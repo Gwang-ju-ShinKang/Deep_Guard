@@ -6,16 +6,16 @@ from datetime import datetime
 
 Base = declarative_base()
 
-# 사용자 정보 테이블
-class UserInfo(Base):
-    __tablename__ = "user_info"
+# session info 테이블
+class SessionInfo(Base):
+    __tablename__ = "session_info"
 
-    user_id = Column(String(50), primary_key=True, index=True)
-    user_pw = Column(String(128))
-    user_contact = Column(String(20))
-    user_type = Column(String(10))
-    joined_at = Column(DateTime)
-
+    session_idx = Column(Integer, primary_key=True, autoincrement=True)  # session_idx를 기본 키로 설정
+    log_device = Column(String, nullable=False)
+    session_id = Column(String, nullable=False)
+    session_created_at = Column(DateTime, nullable=False)
+    session_active_duration = Column(Integer, nullable=True)  # 초 단위
+    session_expire_dt = Column(DateTime, nullable=False)
 
 # 파일 업로드 테이블
 class UploadInfo(Base):
@@ -29,30 +29,28 @@ class UploadInfo(Base):
     session_idx = Column(Integer, nullable=False)  # INT
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
-# 이미지 업로드 백업 테이블 
+# 백업 정보 테이블 
 class ImageBackupInfo(Base):
-    __tablename__ = "Image_backup_info"
+    __tablename__ = "image_backup_info"
 
     backup_idx = Column(BigInteger, primary_key=True, index=True)
-    original_image_file = Column(String(1000))
-    image_data = Column(Text)
+    deepfake_image_file = Column(String(1000))
     deepfake_data = Column(Text)
-    log_device = Column(String(50))
-    log_session = Column(String(300))
+    session_idx = Column(String(1000))
     created_at = Column(DateTime)
-    user_id = Column(String(50), default="anonymous")
     model_pred = Column(Numeric)
 
-# session info 테이블
-class SessionInfo(Base):
-    __tablename__ = "session_info"
+class ImageBackupInfo(Base):
+    __tablename__ = "kang"
 
-    session_idx = Column(Integer, primary_key=True, autoincrement=True)  # session_idx를 기본 키로 설정
-    log_device = Column(String, nullable=False)
-    session_id = Column(String, nullable=False)
-    session_created_at = Column(DateTime, nullable=False)
-    session_active_duration = Column(Integer, nullable=False)  # 초 단위
-    session_expire_dt = Column(DateTime, nullable=False)
+    backup_idx = Column(BigInteger, primary_key=True, index=True)
+    deepfake_image_file = Column(String(1000))
+    deepfake_data = Column(Text)
+    session_idx = Column(String(1000))
+    created_at = Column(DateTime)
+    model_pred = Column(Numeric)
+
+
     
 
 

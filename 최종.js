@@ -22,6 +22,10 @@ retryBtn.style.marginRight = "20px";
 retryBtn.style.display = "none";
 resultSection.appendChild(retryBtn);
 
+// PDF 저장 버튼 추가
+
+
+// 이미지 업로드 핸들러
 // 이미지 업로드 핸들러
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -121,6 +125,9 @@ retryBtn.addEventListener("click", () => {
     percentageText.textContent = "0";
 });
 
+
+
+
 /* 차트 */
 const pieCtx = document.getElementById('pieChart').getContext('2d');
 new Chart(pieCtx, {
@@ -180,7 +187,6 @@ new Chart(barCtx, {
         }
     }
 });
-
 document.getElementById("generate-pdf").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -283,3 +289,15 @@ function goToScroll(name) {
     var location = document.querySelector("#" + name).offsetTop;
     window.scrollTo({ top: location - 50 });
 }
+
+// JavaScript to handle click events for expanding/collapsing sections
+document.querySelectorAll('.rule h2').forEach((title) => {
+    title.addEventListener('click', () => {
+        const content = title.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
+});
