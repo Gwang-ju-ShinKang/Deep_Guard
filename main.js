@@ -319,7 +319,7 @@ function goToScroll(name) {
     window.scrollTo({ top: location - 50 });
 }
 
-// 범죄 예방 수칙 온클릭 이벤트
+/* // 범죄 예방 수칙 온클릭 이벤트
 function goToScrollEventHandler() {
     document.querySelectorAll('.rule h2').forEach((title) => {
         title.addEventListener('click', () => {
@@ -332,7 +332,7 @@ function goToScrollEventHandler() {
         });
     });
 };
-
+ */
 /* 차트 */
 const pieCtx = document.getElementById('pieChart').getContext('2d');
 new Chart(pieCtx, {

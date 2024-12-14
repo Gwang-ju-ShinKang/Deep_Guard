@@ -13,24 +13,51 @@ body {
     /* 기본 마진 제거 */
 }
 
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+.topBar {
     background-color: white;
+    border-bottom: 2px solid #007bff;
+    width: 100%;
     z-index: 1000;
+    position: fixed;
+    width: 100%;
+}
+
+.header {
+    position: relative;
+    width: 66%;
+    top: -10px;
+    left: 17%;
+    padding: clamp(1px, 1vw, 10px) clamp(1px, 1vw, 15px);
+    box-sizing: border-box;
+    /* background-color: white; */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: clamp(10px, 2vw, 30px) clamp(15px, 4vw, 50px);
-    /* 비율로 변경 */
-    border-bottom: clamp(2px, 0.6vw, 6px) solid black;
-    /* rem 단위로 변경 */
-    box-sizing: border-box;
-    /* 패딩, 테두리를 포함한 전체 크기 계산 */
+}
 
+.logo {
+    width: 130%;
+    height: 88%;
+    background-image: url('/image/DeepGuardLogo1.png');
+    background-size: contain;
+    /* 이미지 크기를 요소에 맞게 조정 */
+    background-repeat: no-repeat;
+    /* 이미지 반복 제거 */
+    background-position: center;
+    /* 이미지 중앙 정렬 */
+    color: transparent;
+    /* 텍스트를 보이지 않게 설정 (필요한 경우) */
+    display: inline-block;
+    /* 크기를 적용하기 위해 블록 레벨로 설정 */
+}
+
+.bottomLine {
+    /* border-bottom: clamp(2px, 0.6vw, 6px) solid black; */
+    position: relative;
+    width: 100%;
+    left: clamp(1rem, 7vw, 18.5%);
+    top: 0.5rem;
 }
 
 .header a,
@@ -46,18 +73,18 @@ body {
 .header .logo {
 
     text-decoration: none;
-    font-size: clamp(1.8rem, 3vw, 3rem);
+    font-size: clamp(1.8rem, 2vw, 3rem);
     font-weight: bold;
 }
 
-.header a {
+/* .header a {
     text-decoration: none;
     color: black;
-}
+} */
 
 .header nav a {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-    padding-right: clamp(10px, 5vw, 50px);
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
+    padding-right: clamp(10px, 5vw, 30px);
     text-decoration: none;
     color: #333;
     cursor: pointer;
@@ -123,28 +150,31 @@ body {
 }
 
 .container {
+    left: 17%;
+    max-width: 66%;
     position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: clamp(20px, 5vw, 40px);
-    margin-top: 60px;
+    /* padding: clamp(20px, 5vw, 40px); */
+    /* margin-top: 60px; */
     /* 헤더 아래로 간격 설정 */
-    gap: 20px;
-    box-sizing: border-box;
-    height: calc(100vh - -125px);
+    /* gap: 20px; */
+    /* box-sizing: border-box; */
+    height: calc(100vh - -190px);
     /* 헤더를 제외한 나머지 공간을 채우도록 설정 */
 }
 
 .text-content {
     position: relative;
     top: 30%;
-    left: 16%;
-    flex: 0 0 30%;
-    /* 텍스트가 30% 차지 */
-    max-width: 30%;
-    /* 텍스트 최대 너비 30% */
-    padding: 0 clamp(10px, 2vw, 5%);
+    /* left: 16%; */
+    flex: 0 0 clamp(20%, 30vw, 30%);
+    /* 최소 20%, 최대 30%, 기본값 30vw */
+    max-width: clamp(20%, 30vw, 30%);
+    /* 크기를 창 크기에 비례해 조정 */
+    padding: 0 clamp(2px, 1vw, 2%);
+    /* 창 크기에 따라 패딩 조정 */
     height: 100%;
     /* 텍스트 높이를 100%로 설정 */
     overflow: hidden;
@@ -152,7 +182,7 @@ body {
 
 
 .text-content h1 {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
     margin: 0;
 }
 
@@ -164,9 +194,9 @@ body {
 
 .text-content .button {
     display: inline-block;
-    margin-top: clamp(10px, 3vw, 20px);
-    padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    margin-top: clamp(10px, 2vw, 20px);
+    padding: clamp(8px, 1vw, 10px) clamp(16px, 2vw, 20px);
+    font-size: clamp(0.8rem, 1vw, 1rem);
     text-decoration: none;
     color: white;
     background-color: #4A5246;
@@ -174,22 +204,22 @@ body {
 }
 
 .image-content {
-    flex: 0 0 70%;
-    /* 이미지가 70% 차지 */
-    max-width: 70%;
-    /* 이미지 최대 너비 70% */
-    display: flex;
-    justify-content: center;
-    height: 100%;
+    position: relative;
+    right: clamp(1%, 5%, 25%);
+    flex: 0 0 100%;
+    /* max-width: 100%; */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* height: 100%; */
     /* 이미지 높이를 100%로 설정 */
 }
 
 .image-content img {
-    width: 90%;
-    height: 106%;
-    /* 부모 요소의 높이에 맞게 이미지 크기 조정 */
+    position: relative;
+    right: clamp(1vw, 2vw, 20%);
+    width: clamp(30%, 85%, 85%);
+    height: 100%;
     object-fit: cover;
-    /* 이미지 비율을 유지하면서 화면에 맞게 조정 */
     border-radius: clamp(8px, 1vw, 10px);
 }
 
@@ -226,11 +256,23 @@ main {
     justify-content: space-evenly;
 }
 
-main h2 {
-    font-size: clamp(1.5rem, 2vw, 2.5rem);
-    margin-bottom: 20px;
+
+.mainH2 {
+    display: inline-block;
+    /* 반응형 폰트 크기 */
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem; 
+    padding-bottom: 0px;
+    /* 폰트 크기에 비례한 간격 */
+    border-bottom: 2px solid #DDD;
+    /* 폰트 크기에 비례한 보더 두께 */
 }
 
+main h1{
+    margin: 0px;
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
+}
 main p {
     font-size: 1.2rem;
     color: #666;
@@ -238,9 +280,10 @@ main p {
 
 .mainMove {
     position: relative;
-    height: 52rem;
-    bottom: 3rem;
-    width: 70vw;
+    height: 55rem;
+    bottom: 6rem;
+    width: 69%;
+    left: 2.5%;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -266,10 +309,8 @@ main p {
     /* 뷰포트 너비의 80% */
     height: 80vw;
     /* 뷰포트 너비의 80%로 설정하여 비율 유지 */
-    max-height: 400px;
-    /* 뷰포트 높이의 80%로 제한 */
-    max-width: 400px;
-    /* 최대 너비를 400px로 제한 */
+    max-height: clamp(2.5rem, 25vw, 30rem);
+    max-width: clamp(2.5rem, 25vw, 30rem);
     border: 2px dashed #ccc;
     border-radius: 10px;
     display: flex;
@@ -370,17 +411,18 @@ main p {
 
 /* 메인 2 */
 #main2 {
-    position: relative;
-    top: -16rem;
+    /* position: relative;
+    top: -12rem;
     padding: 2vw;
-    background-color: #c9c2c2;
-    padding-bottom: 8%;
+    background-color: #f8f8f8;
+    padding-bottom: 8%; */
 }
 
 .containert {
     position: relative;
-    top: 2rem;
-    max-width: 70vw;
+    bottom: clamp(1rem,5vw,25vw);
+    left: 2%;
+    max-width: 70%;
     margin: 0 auto;
 }
 
@@ -422,7 +464,6 @@ main p {
 }
 
 .card.large {
-    max-width: 32rem;
     height: 24.5rem;
     grid-column: span 2;
     display: grid;
@@ -516,16 +557,17 @@ main p {
 }
 
 #main3 {
-    margin: 0;
+    /* margin: 0; */
     padding: 0;
-    background-color: #adadad;
-    color: #333;
-    padding-bottom: 8%;
-
+    /* background-color: #adadad; */
+    /* color: #333; */
+    /* padding-bottom: 8%; */
 }
 
 .container3 {
-    max-width: 1200px;
+    position: relative;
+    max-width: 69.7%;
+    left: 2.3%;
     margin: 0 auto;
     padding: 20px;
 }
@@ -666,6 +708,7 @@ main p {
 }
 
 .rule {
+    display: inline-block;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eaeaea;
@@ -680,15 +723,15 @@ main p {
     transition: color 0.3s ease;
 }
 
-.rule h2:hover {
+/* .rule h2:hover {
     color: #0078d7;
-}
+} */
 
 .rule ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
-    display: none;
+    /* display: none; */
     /* Initially hidden */
 }
 
