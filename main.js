@@ -150,65 +150,7 @@ retryBtn.addEventListener("click", () => {
     percentageText.textContent = "0";
 });
 
-/* 차트 */
-const pieCtx = document.getElementById('pieChart').getContext('2d');
-new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-        labels: ['딥페이크 포르노', '기타 콘텐츠 (정치, 허위 정보 등)'],
-        datasets: [{
-            data: [85, 15], // 대한민국 데이터 비율
-            backgroundColor: ['#ff5722', '#ccc'],
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    font: {
-                        family: 'Nanum Gothic',
-                    }
-                }
-            },
-        },
-    }
-});
 
-// 딥페이크 콘텐츠 분포를 보여주는 바 차트
-const barCtx = document.getElementById('barChart').getContext('2d');
-new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: ['포르노', '정치', '허위 정보', '기타'],
-        datasets: [{
-            label: '딥페이크 콘텐츠 분포',
-            data: [85, 5, 5, 5], // 대한민국 콘텐츠 분포 데이터
-            backgroundColor: ['#ff5722', '#ffc107', '#4caf50', '#2196f3'],
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: '비율 (%)',
-                    font: {
-                        family: 'Nanum Gothic',
-                        size: 14,
-                    }
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false,
-            }
-        }
-    }
-});
 
 document.getElementById("generate-pdf").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
@@ -308,25 +250,8 @@ document.getElementById("generate-pdf").addEventListener("click", () => {
     };
 });
 
-function goToScroll(name) {
-    var location = document.querySelector("#" + name).offsetTop;
-    window.scrollTo({ top: location - 50 });
-}
-
-// 범죄 예방 수칙 온클릭 이벤트
-document.querySelectorAll('.rule h2').forEach((title) => {
-    title.addEventListener('click', () => {
-        const content = title.nextElementSibling;
-        if (content.style.display === "block") {
-            content.style.display = "none";
-        } else {
-            content.style.display = "block";
-        }
-    });
-});
-
- // 페이지 로드 시 세션 확인
- async function checkSession() {
+// 페이지 로드 시 세션 확인
+async function checkSession() {
     try {
         // 세션 확인 요청
         const response = await fetch("http://127.0.0.1:8000/get-session", {
@@ -389,8 +314,92 @@ async function sendDeviceInfoToServer() {
     }
 }
 
-// 페이지 로드 시 실행
-window.onload = () => {
-    checkSession();
-    sendDeviceInfoToServer();
+function goToScroll(name) {
+    var location = document.querySelector("#" + name).offsetTop;
+    window.scrollTo({ top: location - 50 });
+}
+
+/* // 범죄 예방 수칙 온클릭 이벤트
+function goToScrollEventHandler() {
+    document.querySelectorAll('.rule h2').forEach((title) => {
+        title.addEventListener('click', () => {
+            const content = title.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    });
+};
+ */
+/* 차트 */
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: ['딥페이크 포르노', '기타 콘텐츠 (정치, 허위 정보 등)'],
+        datasets: [{
+            data: [85, 15], // 대한민국 데이터 비율
+            backgroundColor: ['#ff5722', '#ccc'],
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    font: {
+                        family: 'Nanum Gothic',
+                    }
+                }
+            },
+        },
+    }
+});
+
+// 딥페이크 콘텐츠 분포를 보여주는 바 차트
+const barCtx = document.getElementById('barChart').getContext('2d');
+new Chart(barCtx, {
+    type: 'bar',
+    data: {
+        labels: ['포르노', '정치', '허위 정보', '기타'],
+        datasets: [{
+            label: '딥페이크 콘텐츠 분포',
+            data: [85, 5, 5, 5], // 대한민국 콘텐츠 분포 데이터
+            backgroundColor: ['#ff5722', '#ffc107', '#4caf50', '#2196f3'],
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: '비율 (%)',
+                    font: {
+                        family: 'Nanum Gothic',
+                        size: 14,
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false,
+            }
+        }
+    }
+});
+
+window.onload = async () => {
+    // 기존 로직 실행
+    goToScrollEventHandler();
+    addClickEventToCrimeRules();
+    renderCharts();
+
+    // 새로 추가된 로직 실행
+    await checkSession();
+    await sendDeviceInfoToServer();
 };
