@@ -1,7 +1,9 @@
-from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Numeric, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, BigInteger, Text, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DECIMAL, TIMESTAMP
 from datetime import datetime
+from sqlalchemy.sql import func
+from pydantic import BaseModel
 
 Base = declarative_base()
 
@@ -31,17 +33,28 @@ class ImageBackupInfo(Base):
     user_id = Column(String(50), default="anonymous")
     model_pred = Column(Numeric)
 
-# session info 테이블
+
 class SessionInfo(Base):
     __tablename__ = "session_info"
 
-    session_idx = Column(Integer, primary_key=True, autoincrement=True)  # session_idx를 기본 키로 설정
-    log_device = Column(String, nullable=False)
-    session_id = Column(String, nullable=False)
-    session_created_at = Column(DateTime, nullable=False)
-    session_active_duration = Column(Integer, nullable=False)  # 초 단위
-    session_expire_dt = Column(DateTime, nullable=False)
-    
+     # Primary Key
+    session_idx = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 일반 컬럼
+    log_device = Column(Text, nullable=True)  # 로그 디바이스 정보
+    session_id = Column(Text, nullable=True)  # 세션 ID
+    session_active_duration = Column(Integer, nullable=True)  # 세션 활성 시간 (초 단위)
+    session_expire_dt = Column(DateTime, nullable=True)  # 세션 만료 시간
+    session_created_at = Column(DateTime, server_default=func.now(), nullable=False)  # 생성 시간 (자동)
+
+    def __repr__(self):
+        return f"<SessionInfo(session_idx={self.session_idx}, session_id='{self.session_id}')>"
+
+# Pydantic 모델 정의
+class DeviceInfo(BaseModel):
+    userAgent: str
+    platform: str
+    language: str    
 
 
 

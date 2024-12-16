@@ -30,18 +30,12 @@ resultSection.appendChild(retryBtn);
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-            analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
-            consentSection.style.display = "block"; // 동의 체크박스 표시
-        };
-        reader.readAsDataURL(file);
+        handleFileUpload(file);
     }
 });
 
 // 클립보드 이미지 붙여넣기 처리
-imagePreview.addEventListener("paste", (event) => {
+document.addEventListener("paste", (event) => {
     const items = event.clipboardData.items;
 
     for (let i = 0; i < items.length; i++) {
@@ -49,9 +43,15 @@ imagePreview.addEventListener("paste", (event) => {
         if (item.type.startsWith("image/")) {
             const file = item.getAsFile();
             if (file) {
-                handleFileUpload(file);
+                // 파일을 fileInput에 추가
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files; // fileInput의 파일 목록 업데이트
+
+                handleFileUpload(file); // 파일 업로드 처리
                 analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
                 consentSection.style.display = "block"; // 동의 체크박스 표시
+                break; // 첫 번째 이미지 파일만 처리
             }
         }
     }
@@ -62,7 +62,7 @@ function handleFileUpload(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
         imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-        analyzeBtn.style.display = "inline-block";; // PDF 저장 버튼 표시
+        analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
     };
     reader.readAsDataURL(file);
 }
@@ -126,6 +126,15 @@ retryBtn.addEventListener("click", () => {
     chart.style.background = "conic-gradient(#ccc 0deg 360deg)";
     consentSection.style.display = "none"; // 동의 섹션 숨김
     percentageText.textContent = "0";
+    // 파일 입력 필드 초기화
+    fileInput.value = ""; // 파일 입력 필드의 value를 초기화하여 같은 파일도 업로드 가능하도록 설정
+
+    // 동의 체크박스 초기화
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    if (assentCheckbox) {
+        assentCheckbox.checked = false; // 체크박스 해제
+        consentSection.style.display = "none"; // 동의 섹션 숨기기
+    }
 });
 
 
@@ -306,19 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const percentageSpan = document.getElementById("percentage");
 
     // 동의 체크박스 클릭 시 알림
-    assentCheckbox.addEventListener("change", () => {
-        if (assentCheckbox.checked) {
-            const now = new Date();
-            alert(`약관에 동의하셨습니다. 동의 시간: ${now.toLocaleString()}`);
-        } else {
-            alert("약관 동의를 해제하셨습니다.");
-        }
-    });
 
     // 세션 ID 가져오기 함수
     async function getSessionIdx() {
         try {
-            const response = await fetch("http://127.0.0.1:8000/session", {
+            const response = await fetch("http://127.0.0.1:8000/session", { // 확인
                 method: "GET",
                 credentials: "include",
             });
@@ -390,18 +391,121 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+// 모달 열기 시 페이지 스크롤 비활성화
+function disableScroll() {
+    document.body.style.overflow = "hidden"; // 페이지 스크롤 비활성화
+}
 
-// 범죄 예방 수칙 온클릭 이벤트
-function goToScrollEventHandler() {
-    document.querySelectorAll('.rule h2').forEach((title) => {
-        title.addEventListener('click', () => {
-            const content = title.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
+// 모달 닫기 시 페이지 스크롤 활성화
+function enableScroll() {
+    document.body.style.overflow = ""; // 페이지 스크롤 복구
+}
+
+// 모달창
+document.addEventListener("DOMContentLoaded", () => {
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    const termsModal = document.getElementById("terms-modal");
+    const modalConfirmBtn = document.getElementById("confirm-btn");
+    const closeTermsBtn = document.getElementById("close-terms");
+    const allAgreeCheckbox = document.getElementById("all-agree-checkbox");
+    const radios = document.querySelectorAll("input[type=radio]");
+
+
+    // 모달 초기화 함수
+    function resetModal() {
+        allAgreeCheckbox.checked = false; // 전체 동의 체크박스 해제
+        radios.forEach(radio => {
+            radio.checked = false; // 모든 라디오 버튼 체크 해제
+        });
+        modalConfirmBtn.disabled = true; // 확인 버튼 비활성화
+    }
+
+    // 동의 체크박스 클릭 시 모달 열기
+    assentCheckbox.addEventListener("change", () => {
+        if (assentCheckbox.checked) {
+            resetModal(); // 모달 상태 초기화
+            termsModal.style.display = "flex"; // 모달 열기
+            disableScroll(); // 스크롤 비활성화
+        } else {
+            alert("동의를 해제하셨습니다.");
+        }
+    });
+
+    // 모달에서 "확인" 버튼 클릭 시
+    modalConfirmBtn.addEventListener("click", () => {
+        termsModal.style.display = "none"; // 모달 닫기
+        enableScroll(); // 스크롤 활성화
+        alert("약관에 동의하셨습니다.");
+    });
+
+    // 모달 닫기 버튼 클릭 시
+    closeTermsBtn.addEventListener("click", () => {
+        termsModal.style.display = "none"; // 모달 닫기
+        assentCheckbox.checked = false; // 동의 체크박스 해제
+        enableScroll(); // 스크롤 활성화
+        resetModal(); // 모달 초기화
+    });
+
+    // 모달 외부 클릭 시 닫기
+    termsModal.addEventListener("click", (event) => {
+        if (event.target === termsModal) {
+            termsModal.style.display = "none";
+            assentCheckbox.checked = false; // 동의 체크박스 해제
+            resetModal(); // 모달 초기화
+        }
+    });
+
+    // 전체 동의 체크박스 이벤트
+    allAgreeCheckbox.addEventListener("change", () => {
+        const isChecked = allAgreeCheckbox.checked;
+
+        document.querySelectorAll(".terms-section").forEach(section => {
+            const inputs = section.querySelectorAll("input[type=radio]");
+            if (isChecked) {
+                inputs[0].checked = true; // "동의함" 선택
             } else {
-                content.style.display = "block";
+                inputs.forEach(input => {
+                    input.checked = false; // 모든 라디오 버튼 체크 해제
+                });
+            }
+        });
+
+        updateConfirmButtonState();
+    });
+
+    // 개별 약관 동의 이벤트
+    radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            updateConfirmButtonState();
+            if (!allTermsAgreed()) {
+                allAgreeCheckbox.checked = false; // 개별적으로 동의 해제 시 전체 동의 해제
             }
         });
     });
-};
 
+    // 약관 동의 상태 확인 및 버튼 활성화 업데이트
+    function updateConfirmButtonState() {
+        const allChecked = allTermsAgreed();
+        modalConfirmBtn.disabled = !allChecked;
+    }
+
+    // 모든 필수 항목이 동의되었는지 확인
+    function allTermsAgreed() {
+        return [...document.querySelectorAll(".terms-section")].every(section => {
+            const inputs = section.querySelectorAll("input[type=radio]");
+            return [...inputs].some(input => input.checked && input.value === "agree");
+        });
+    }
+});
+
+// 범죄 예방 수칙 온클릭 이벤트
+document.querySelectorAll('.rule h2').forEach((title) => {
+    title.addEventListener('click', () => {
+        const content = title.nextElementSibling;
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    });
+});

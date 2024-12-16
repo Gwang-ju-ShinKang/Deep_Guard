@@ -25,18 +25,14 @@
         // 페이지 로드 시 세션 확인
         async function checkSession() {
             try {
-                // 세션 확인 요청
-                const response = await fetch("http://127.0.0.1:8000/get-session", {
-                    method: "GET",
-                    credentials: "include", // 쿠키 전송을 허용
-                });
+                // 쿠키에서 세션 ID 가져오기
+                const sessionIdCookie = document.cookie.split('; ').find(row => row.startsWith('session_id='));
 
-                // 세션이 없는 경우
-                if (response.status === 400) {
+                if (!sessionIdCookie) {
                     console.log("세션 없음, 세션 생성 중...");
                     const createResponse = await fetch("http://127.0.0.1:8000/create-session", {
                         method: "GET",
-                        credentials: "include", // 쿠키 전송 허용
+                        credentials: "include",
                     });
 
                     if (!createResponse.ok) {
@@ -44,20 +40,31 @@
                     }
 
                     const createData = await createResponse.json();
-                    console.log("세션 생성 완료:", createData.session_id);
-                } else if (response.ok) {
-                    // 세션이 있는 경우
-                    const data = await response.json();
-                    console.log("세션 확인 완료:", data);
-
+                    console.log("세션 생성 완료:", createData.session_id); // 새로운 세션 ID 출력
                 } else {
-                    throw new Error(`알 수 없는 상태 코드: ${response.status}`);
+                    // 쿠키에서 세션 ID가 존재하는 경우
+                    const sessionId = sessionIdCookie.split('=')[1];
+                    console.log("세션 확인 완료:", sessionId); // 기존 세션 ID 출력
+
+                    // 기존 세션 ID로 /get-session 호출하여 세션 정보 가져오기
+                    const getSessionResponse = await fetch("http://127.0.0.1:8000/get-session", {
+                        method: "GET",
+                        credentials: "include", // 쿠키 포함
+                    });
+
+                    if (!getSessionResponse.ok) {
+                        throw new Error("세션 정보 가져오기 실패");
+                    }
+
+                    const sessionData = await getSessionResponse.json();
+                    console.log("세션 정보:", sessionData); // 세션 정보 출력
                 }
             } catch (error) {
                 console.error("세션 처리 중 오류:", error.message);
             }
         }
 
+        // 장치 정보 전송 함수
         async function sendDeviceInfoToServer() {
             const deviceInfo = {
                 userAgent: navigator.userAgent,
@@ -86,13 +93,55 @@
             }
         }
 
-        // 페이지 로드 시 실행
-        window.onload = () => {
-            checkSession();
-            sendDeviceInfoToServer();
-        };
+        // 페이지 로드 시 장치 정보 전송
+        // 페이지 로드 시 세션 확인
+        document.addEventListener("DOMContentLoaded", checkSession);
+        document.addEventListener("DOMContentLoaded", sendDeviceInfoToServer);
 
-       
+        // 한국 시간으로 ISO 형식의 문자열 반환
+        function getKSTTimeISO() {
+            const now = new Date();
+            const offset = 9 * 60; // UTC+9 (분 단위)
+            const kstTime = new Date(now.getTime() + offset * 60000);
+            return kstTime.toISOString().slice(0, 19); // ISO 문자열에서 밀리초와 Z 제거
+        }
+
+        // 세션 종료 시간 전송
+        async function sendSessionEndTime() {
+            const sessionEndTime = getKSTTimeISO(); // 한국 시간 가져오기
+            console.log("한국 시간:", sessionEndTime); // 확인용 로그
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/session/end", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        session_expire_dt: sessionEndTime, // 한국 시간 전송
+                    }),
+                    credentials: "include",
+                });
+
+                if (response.ok) {
+                    console.log("세션 종료 정보 전송 성공");
+                } else {
+                    const errorData = await response.json();
+                    console.error("세션 종료 정보 전송 실패:", response.status, errorData);
+                }
+            } catch (error) {
+                console.error("세션 종료 정보 전송 중 오류:", error.message);
+            }
+        }
+
+        // 창 종료 시 세션 종료 정보 전송
+        window.addEventListener("beforeunload", (event) => {
+            sendSessionEndTime().then(() => {
+                event.returnValue = ""; // Chrome에서 사용자에게 종료 경고 표시
+            });
+        });
+
+
     </script>
 
 </head>
@@ -140,6 +189,69 @@
             </div>
             <label for="file-upload" class="upload-btn">Upload Photo</label>
             <button id="analyze-btn" class="upload-btn" style="display: none;">Analyze</button>
+            <!-- 모달 -->
+            <div id="terms-modal" style="display: none;">
+                <div class="modal-content">
+
+                    <h1>약관 동의</h1>
+                    <p>딥페이크 분석 서비스 사용을 위해 아래의 약관에 동의해주세요. 선택 사항에 따라 일부 기능 사용이 제한될 수 있습니다.</p>
+
+                    <!-- 전체 동의 -->
+                    <div id="all-agree">
+                        <input type="checkbox" id="all-agree-checkbox">
+                        <label for="all-agree-checkbox"><strong>모두 동의합니다.</strong></label>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="terms-header">[필수] 민감정보 수집 및 이용</div>
+                        <p>딥페이크 분석 과정에서 제공된 이미지 데이터가 민감정보에 해당될 수 있습니다. 해당 데이터를 분석 목적으로 처리하며, 분석 완료 후 삭제됩니다.</p>
+                        <div class="agree-options">
+                            <input type="radio" id="sensitive-agree" name="sensitive" value="agree">
+                            <label for="sensitive-agree">동의함</label>
+                            <input type="radio" id="sensitive-disagree" name="sensitive" value="disagree">
+                            <label for="sensitive-disagree">동의안함</label>
+                        </div>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="terms-header">[필수] 개인정보 수집 및 이용</div>
+                        <p>딥페이크 분석 서비스를 제공하기 위해 세션 ID와 사용자 디바이스 정보를 수집하며, 수집된 정보는 보안 목적으로만 사용됩니다.</p>
+                        <div class="agree-options">
+                            <input type="radio" id="personal-agree" name="personal" value="agree">
+                            <label for="personal-agree">동의함</label>
+                            <input type="radio" id="personal-disagree" name="personal" value="disagree">
+                            <label for="personal-disagree">동의안함</label>
+                        </div>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="terms-header">[필수] 서비스 개선을 위한 데이터 제공</div>
+                        <p>분석 결과와 관련된 데이터를 익명화하여 서비스 개선 및 연구 목적으로 활용할 수 있습니다.</p>
+                        <div class="agree-options">
+                            <input type="radio" id="improve-agree" name="improve" value="agree">
+                            <label for="improve-agree">동의함</label>
+                            <input type="radio" id="improve-disagree" name="improve" value="disagree">
+                            <label for="improve-disagree">동의안함</label>
+                        </div>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="terms-header">[필수] 딥페이크 분석 결과 저장 및 이용</div>
+                        <p>분석 결과를 저장하고, 사용자가 요청할 경우 해당 결과를 삭제할 수 있습니다.</p>
+                        <div class="agree-options">
+                            <input type="radio" id="result-agree" name="result" value="agree">
+                            <label for="result-agree">동의함</label>
+                            <input type="radio" id="result-disagree" name="result" value="disagree">
+                            <label for="result-disagree">동의안함</label>
+                        </div>
+                    </div>
+
+                    <div class="btn-container">
+                        <button id="confirm-btn" class="btn" disabled>확인</button>
+                        <button id="close-terms" class="btn">닫기</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Loading Section -->
@@ -261,87 +373,89 @@
                         <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스.</p>
                         <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
                 </div>
-
     </main>
-     <main id="main4" class="content">
-        <div class="rules-container">
-            <!-- Column 1 (1~4) -->
-            <div class="header3">
-                <h1>범죄 예방 수칙</h1>
-            </div>
+    <main id="main4">
+        <div class="header3">
+            <h1>범죄 예방 수칙</h1>
+        </div>
+        <div class="content">
+            <div class="rules-container">
+                <!-- Column 1 (1~4) -->
 
-            <div class="column">
-                <section class="rule">
-                    <h2>1. 개인정보 보호</h2>
-                    <ul>
-                        <li>SNS 및 이메일에 민감한 개인정보를 공개하지 마세요.</li>
-                        <li>강력한 비밀번호를 사용하고 정기적으로 변경하세요.</li>
-                        <li>중요한 계정에 2단계 인증을 활성화하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>2. 딥페이크와 허위 정보 감별</h2>
-                    <ul>
-                        <li>의심스러운 동영상이나 이미지는 검증 도구를 활용하세요.</li>
-                        <li>출처가 불분명한 콘텐츠는 공유 전에 신뢰도를 확인하세요.</li>
-                        <li>유명인 관련 콘텐츠의 편집 여부를 의심하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>3. 악성 링크와 피싱 방지</h2>
-                    <ul>
-                        <li>출처를 알 수 없는 링크는 클릭하지 마세요.</li>
-                        <li>의심스러운 이메일의 발신자를 확인하세요.</li>
-                        <li>금융정보를 요청하는 메시지는 신뢰성을 확인하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>4. 안전한 소프트웨어 사용</h2>
-                    <ul>
-                        <li>정품 소프트웨어와 인증된 앱만 사용하세요.</li>
-                        <li>소프트웨어와 운영체제를 주기적으로 업데이트하세요.</li>
-                        <li>신뢰할 수 있는 안티바이러스 프로그램을 설치하세요.</li>
-                    </ul>
-                </section>
-            </div>
+                <div class="column">
+                    <section class="rule">
+                        <h2>1. 개인정보 보호</h2>
+                        <ul>
+                            <li>SNS 및 이메일에 민감한 개인정보를 공개하지 마세요.</li>
+                            <li>강력한 비밀번호를 사용하고 정기적으로 변경하세요.</li>
+                            <li>중요한 계정에 2단계 인증을 활성화하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>2. 딥페이크와 허위 정보 감별</h2>
+                        <ul>
+                            <li>의심스러운 동영상이나 이미지는 검증 도구를 활용하세요.</li>
+                            <li>출처가 불분명한 콘텐츠는 공유 전에 신뢰도를 확인하세요.</li>
+                            <li>유명인 관련 콘텐츠의 편집 여부를 의심하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>3. 악성 링크와 피싱 방지</h2>
+                        <ul>
+                            <li>출처를 알 수 없는 링크는 클릭하지 마세요.</li>
+                            <li>의심스러운 이메일의 발신자를 확인하세요.</li>
+                            <li>금융정보를 요청하는 메시지는 신뢰성을 확인하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>4. 안전한 소프트웨어 사용</h2>
+                        <ul>
+                            <li>정품 소프트웨어와 인증된 앱만 사용하세요.</li>
+                            <li>소프트웨어와 운영체제를 주기적으로 업데이트하세요.</li>
+                            <li>신뢰할 수 있는 안티바이러스 프로그램을 설치하세요.</li>
+                        </ul>
+                    </section>
+                </div>
 
-            <!-- Column 2 (5~8) -->
-            <div class="column">
-                <section class="rule">
-                    <h2>5. 자녀 및 가족의 디지털 안전</h2>
-                    <ul>
-                        <li>자녀와 딥페이크 위험성에 대해 대화하세요.</li>
-                        <li>가족과 신뢰할 수 있는 온라인 행동 수칙을 정하세요.</li>
-                        <li>소셜 미디어 이용 시간을 적절히 관리하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>6. 온라인 소통 시 주의점</h2>
-                    <ul>
-                        <li>낯선 사람과 민감한 정보를 공유하지 마세요.</li>
-                        <li>공공 장소에서만 만남을 약속하세요.</li>
-                        <li>위협적인 메시지는 스크린샷을 저장하고 신고하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>7. 딥페이크 대응 방법</h2>
-                    <ul>
-                        <li>피해가 의심되면 즉시 검증 도구를 사용하세요.</li>
-                        <li>피해를 입은 경우 관련 기관에 신고하세요.</li>
-                        <li>플랫폼의 신고 기능을 활용하세요.</li>
-                    </ul>
-                </section>
-                <section class="rule">
-                    <h2>8. 정기적인 보안 점검</h2>
-                    <ul>
-                        <li>계정 로그인을 정기적으로 확인하세요.</li>
-                        <li>개인 정보가 포함된 파일은 안전하게 백업하세요.</li>
-                        <li>인터넷 사용 습관을 점검하세요.</li>
-                    </ul>
-                </section>
+                <!-- Column 2 (5~8) -->
+                <div class="column">
+                    <section class="rule">
+                        <h2>5. 자녀 및 가족의 디지털 안전</h2>
+                        <ul>
+                            <li>자녀와 딥페이크 위험성에 대해 대화하세요.</li>
+                            <li>가족과 신뢰할 수 있는 온라인 행동 수칙을 정하세요.</li>
+                            <li>소셜 미디어 이용 시간을 적절히 관리하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>6. 온라인 소통 시 주의점</h2>
+                        <ul>
+                            <li>낯선 사람과 민감한 정보를 공유하지 마세요.</li>
+                            <li>공공 장소에서만 만남을 약속하세요.</li>
+                            <li>위협적인 메시지는 스크린샷을 저장하고 신고하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>7. 딥페이크 대응 방법</h2>
+                        <ul>
+                            <li>피해가 의심되면 즉시 검증 도구를 사용하세요.</li>
+                            <li>피해를 입은 경우 관련 기관에 신고하세요.</li>
+                            <li>플랫폼의 신고 기능을 활용하세요.</li>
+                        </ul>
+                    </section>
+                    <section class="rule">
+                        <h2>8. 정기적인 보안 점검</h2>
+                        <ul>
+                            <li>계정 로그인을 정기적으로 확인하세요.</li>
+                            <li>개인 정보가 포함된 파일은 안전하게 백업하세요.</li>
+                            <li>인터넷 사용 습관을 점검하세요.</li>
+                        </ul>
+                    </section>
+                </div>
             </div>
         </div>
     </main>
+
 
     <footer class="footer">
         <p>&copy; (주) Deep Guard</p>
