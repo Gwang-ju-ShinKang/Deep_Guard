@@ -4,11 +4,13 @@ from fastapi import FastAPI, Depends, UploadFile, File, Form,HTTPException, Requ
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from itsdangerous import URLSafeTimedSerializer
-from models import Base, UserInfo, UploadInfo, SessionInfo
+from models import Base, UploadInfo, SessionInfo
 from PIL import Image
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.models import load_model
+from keras.layers import TFSMLayer
 from typing import List
 import io
 import json
@@ -17,6 +19,8 @@ import os
 import tensorflow as tf
 import uuid
 import uvicorn
+import tensorflow as tf
+import traceback
 
 # 데이터베이스 초기화
 Base.metadata.create_all(bind=engine)
@@ -41,16 +45,10 @@ def get_db():
         db.close()
 
 # API 엔드포인트: 모든 데이터 가져오기
-@app.get("/items")
-def read_items(db: Session = Depends(get_db)):
-    items = db.query(UserInfo).all()
-    return items
-
 @app.get("/image")
 def read_items(db: Session = Depends(get_db)):
     items = db.query(UploadInfo).all()
     return items
-
 
 # Secret Key와 Serializer 설정
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
@@ -161,25 +159,45 @@ async def receive_device_info(
         print("Error saving to DB:", e)
         return {"message": "Error saving device information", "error": str(e)}  # 오류 메시지 추가
 
-# 프로젝트의 루트 경로를 base_dir로 설정 (현재 파일의 상위 디렉터리로 이동)
+""" # 모델 로드
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # 현재 파일의 상위 디렉터리로 이동
-model_path = os.path.join(base_dir, 'Model', 'Xception_model_V1.h5')  # Model 폴더로 경로 생성
+model_path = os.path.join(base_dir, 'Model', 'Xception_model.h5')  # Model 폴더로 경로 생성
 print(f"🔍 모델 경로: {model_path}")  # 디버깅을 위해 경로 확인
 
 try:
-    model = tf.keras.models.load_model(model_path)
+    # model = tf.keras.models.load_model(model_path)
+    # 🛠️ custom_objects 추가
+    model = load_model(
+        model_path, 
+        custom_objects={'BatchNormalization': BatchNormalization}
+    )
     print(f"✅ 모델이 성공적으로 로드되었습니다! (입력 형태: {model.input_shape})")
 except FileNotFoundError as e:
     print(f"❌ 파일을 찾을 수 없습니다. 경로를 확인하세요: {model_path}")
 except Exception as e:
     print(f"❌ 모델 로드 중 알 수 없는 오류가 발생했습니다: {e}")
+    model = None  # 모델 로드 실패시 None으로 설정 """
+
+# 📁 모델 저장 경로 설정
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))  # 현재 파일의 상위 디렉터리로 이동
+model_dir = os.path.join(base_dir, 'Model', 'Xception_model')  # 디렉터리로 경로 생성
+
+# 🛠️ 모델 로드
+try:
+    # SavedModel 형식으로 모델을 로드합니다.
+    model = tf.keras.models.load_model(model_dir)
+    print(f"✅ 모델이 성공적으로 로드되었습니다! (입력 형태: {model.input_shape})")
+except FileNotFoundError as e:
+    print(f"❌ 파일을 찾을 수 없습니다. 경로를 확인하세요: {model_dir}")
+except Exception as e:
+    print(f"❌ 모델 로드 중 알 수 없는 오류가 발생했습니다: {e}")
     model = None  # 모델 로드 실패시 None으로 설정
-
-
+    
+# 이미지 전처리 
 def preprocess_image(image: Image.Image) -> np.ndarray:
     """ 이미지를 224x224x3 형태로 변환하는 함수 """
     try:
-        image = image.resize((128, 128))  
+        image = image.resize((224, 224))  
         if image.mode == 'L': 
             image = image.convert('RGB')
         if image.mode == 'RGBA':  
@@ -198,7 +216,7 @@ def preprocess_image(image: Image.Image) -> np.ndarray:
         print(f"❌ 이미지 전처리 중 오류 발생: {e}")
         raise HTTPException(status_code=500, detail="이미지 전처리 중 오류가 발생했습니다.")
 
-
+# 이미지 업로드
 @app.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
     try:
@@ -207,14 +225,20 @@ async def upload_file(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="업로드된 파일이 비어 있습니다.")
 
         image = Image.open(io.BytesIO(contents))  
-        image_array = preprocess_image(image)  
+        image_array = preprocess_image(image)  # 이미지를 전처리하여 224x224로 변환
 
         try:
             if model is None:
                 raise HTTPException(status_code=500, detail="모델이 로드되지 않았습니다.")
             
             print(f"🖼️ 예측에 사용된 입력 데이터 크기: {image_array.shape}")
-            prediction = model.predict(image_array)
+            
+           #두 개의 입력을 동시에 모델에 전달
+           #prediction = model.predict([image_array, image_array])  # (image_array, image_array)로 전달
+           #print(f"✅ 예측 결과: {prediction}")   
+
+            # 다양한 입력 아닌 해당 이미지 하나를 다른 것에 복제해서 반복 전달하지 않\uc도록 수정
+            prediction = model.predict(image_array)  # 하나의 입력만 전달
             print(f"✅ 예측 결과: {prediction}")  
 
         except Exception as e:
@@ -227,6 +251,7 @@ async def upload_file(file: UploadFile = File(...)):
     except Exception as e:
         print(f"❌ 서버 오류 발생: {e}")
         return JSONResponse(content={"error": f"서버 오류: {str(e)}"})
+
 
 
 if __name__ == "__main__":
