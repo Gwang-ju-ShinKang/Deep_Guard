@@ -93,7 +93,7 @@ body {
 @media (max-width: 1024px) {
     .header {
         padding: 2% 3%;
-        border-bottom: 0.35rem solid black;
+        /* border-bottom: 0.35rem solid black; */
     }
 
     .header .logo {
@@ -112,7 +112,7 @@ body {
 @media (max-width: 768px) {
     .header {
         padding: 1.5% 2.5%;
-        border-bottom: 0.3rem solid black;
+        /* border-bottom: 0.3rem solid black; */
     }
 
     .header .logo {
@@ -262,17 +262,18 @@ main {
     /* 반응형 폰트 크기 */
     justify-content: center;
     align-items: center;
-    margin-bottom: 3rem; 
+    margin-bottom: 3rem;
     padding-bottom: 0px;
     /* 폰트 크기에 비례한 간격 */
     border-bottom: 2px solid #DDD;
     /* 폰트 크기에 비례한 보더 두께 */
 }
 
-main h1{
+main h1 {
     margin: 0px;
     font-size: clamp(1.5rem, 2vw, 2.5rem);
 }
+
 main p {
     font-size: 1.2rem;
     color: #666;
@@ -280,7 +281,8 @@ main p {
 
 .mainMove {
     position: relative;
-    height: 55rem;
+    padding-top: 5%;
+    height: 60rem;
     bottom: 6rem;
     width: 69%;
     left: 2.5%;
@@ -318,7 +320,6 @@ main p {
     align-items: center;
     background-color: #f9f9f9;
     color: #777;
-
 }
 
 .upload-container img {
@@ -416,11 +417,20 @@ main p {
     padding: 2vw;
     background-color: #f8f8f8;
     padding-bottom: 8%; */
+    position: relative;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    background-color: #f8f8f8;
+    color: #333;
+    padding-top: 150px;
+    padding-bottom: 8%;
+    justify-content: space-evenly;
 }
 
 .containert {
     position: relative;
-    bottom: clamp(1rem,5vw,25vw);
+    bottom: clamp(1rem, 7vw, 30rem);
     left: 2%;
     max-width: 70%;
     margin: 0 auto;
@@ -437,7 +447,7 @@ main p {
 
 .header2 {
     position: relative;
-    bottom: 1rem;
+    bottom: 4rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -483,7 +493,7 @@ main p {
 
 .highlight2 {
     position: relative;
-    bottom: 17rem;
+    bottom: clamp(2rem, 20vw, 18rem);
     color: white;
     left: 1rem;
 }
@@ -543,12 +553,6 @@ main p {
     }
 }
 
-.footer {
-    text-align: center;
-    padding: 20px;
-    background-color: black;
-    color: #fff;
-}
 
 /* 메인3 */
 #submain2 {
@@ -561,10 +565,12 @@ main p {
     padding: 0;
     /* background-color: #adadad; */
     /* color: #333; */
-    /* padding-bottom: 8%; */
+    padding-bottom: 8%;
+    padding-top: 5%;
 }
 
 .container3 {
+    top: 2rem;
     position: relative;
     max-width: 69.7%;
     left: 2.3%;
@@ -573,17 +579,21 @@ main p {
 }
 
 .header3 {
-    margin-bottom: 20px;
+    position: relative;
+    bottom: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
 }
 
+
 .header3 h1 {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 2vw, 2.5rem);
     margin: 0;
 }
 
-.breadcrumb {
+*/ .breadcrumb {
     font-size: 0.9rem;
     color: #555;
     margin-top: 5px;
@@ -599,7 +609,9 @@ main p {
 }
 
 .info-section {
-    margin: 20px 0;
+    /* margin: 20px 0; */
+    position: relative;
+    bottom: 2.3rem;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -633,7 +645,7 @@ main p {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    margin-top: 20px;
+    margin-top: -   0.5rem;
 }
 
 .card3 {
@@ -643,6 +655,7 @@ main p {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
+    z-index: 300;
 }
 
 .card3 img {
@@ -688,34 +701,77 @@ main p {
     }
 }
 
+/* Responsive CSS for main4 section */
+
+#main4 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #f8f8f8;
+    color: #333;
+    padding: 5% 2%;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    padding-top: 7.5%;
+    height: 83%;
+}
+
+.main4Container {
+    position: relative;
+    bottom: clamp(1vw, 3vw, 6rem);
+    max-width: 74%;
+    left: 2.5%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    box-sizing: border-box;   
+}
+
+.header4 {
+    position: relative;
+    bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+}
+
 .content {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 20px;
+    position: relative;
+    /* bottom: 1rem; */
+    width: 100%;
+    padding: 1rem 1rem;
     background: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    box-sizing: border-box;
+    padding-left: clamp(1rem, 5rem, 15rem);
+    padding-bottom: 1.5rem;
+    /* margin: 1rem auto; */
+    /* Center the content with a margin */
 }
 
 .rules-container {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-around;
 }
 
 /* Columns */
 .column {
-    flex: 1;
+    flex: 1 1 300px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .rule {
     display: inline-block;
-    margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eaeaea;
 }
 
 .rule h2 {
-    font-size: 1.5em;
+    font-size: clamp(1rem, 2vw, 1.8rem);
     color: #0056b3;
     margin-bottom: 10px;
     position: relative;
@@ -723,23 +779,17 @@ main p {
     transition: color 0.3s ease;
 }
 
-/* .rule h2:hover {
-    color: #0078d7;
-} */
-
 .rule ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
-    /* display: none; */
-    /* Initially hidden */
 }
 
 .rule ul li {
     position: relative;
     padding-left: 20px;
     margin-bottom: 5px;
-    font-size: 0.9em;
+    font-size: clamp(0.8rem, 1vw, 1.2rem);
 }
 
 .rule ul li::before {
@@ -749,4 +799,86 @@ main p {
     top: 0;
     color: #0078d7;
     font-weight: bold;
+}
+
+/* 화면 너비 768px 이하 */
+@media (max-width: 768px) {
+    
+    /* main4의 내부 여백과 배치 조정 */
+    #main4 {
+        padding-bottom: 12%;
+        /* 패딩을 추가하여 더 많은 공간을 확보함 */
+    }
+    
+    /* main4Container의 너비 조정 */
+    .main4Container {
+        max-width: 95%;
+        /* 최대 너비를 더 줄여 모바일에 적합하게 함 */
+    }
+    
+    /* content 내부 패딩 및 정렬 조정 */
+    .content {
+        padding: 1rem;
+        /* 전체 패딩을 줄임으로써 모바일에 맞춤 */
+        padding-left: 1rem;
+        /* 왼쪽 패딩을 더 줄여 공간을 절약 */
+    }
+    
+    /* rules-container의 배치를 단일 열로 변경 */
+    .rules-container {
+        flex-direction: column;
+        /* 가로 정렬 → 세로 정렬로 변경 */
+        gap: 1.5rem;
+        /* 간격을 줄여 더 컴팩트하게 함 */
+    }
+}
+
+/* 화면 너비 480px 이하 */
+@media (max-width: 480px) {
+    
+    /* main4의 내부 여백과 배치 조정 */
+    #main4 {
+        padding-bottom: 15%;
+        /* 모바일에 더 넉넉한 패딩을 추가 */
+    }
+    
+    /* main4Container의 너비 조정 */
+    .main4Container {
+        max-width: 100%;
+        /* 모바일에 맞춰 최대 너비를 100%로 설정 */
+    }
+    
+    /* content 내부 패딩 및 정렬 조정 */
+    .content {
+        padding: 0.5rem;
+        /* 내부 패딩을 줄여 공간 절약 */
+    }
+    
+    /* rules-container의 배치를 단일 열로 변경 */
+    .rules-container {
+        flex-direction: column;
+        /* 가로 정렬 → 세로 정렬로 변경 */
+        gap: 1rem;
+        /* 간격을 줄여 화면에 더 적합하게 함 */
+    }
+    
+    /* rule 제목의 글꼴 크기 조정 */
+    .rule h2 {
+        font-size: 1.2em;
+        /* 글꼴 크기를 줄여 모바일에 맞춤 */
+    }
+    
+    /* rule 항목의 글꼴 크기 조정 */
+    .rule ul li {
+        font-size: 0.8em;
+        /* 글꼴 크기를 줄여 모바일에 맞춤 */
+    }
+}
+.footer {
+    position: relative;
+    bottom: 20%;
+    text-align: center;
+    padding: 20px;
+    background-color: black;
+    color: #fff;
 }
