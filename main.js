@@ -13,6 +13,7 @@ const chart = document.getElementById('chart');
 const percentageText = document.getElementById('percentage');
 const retryBtn = document.createElement('button');
 const pdfButton = document.createElement('button');
+const consentSection = document.getElementById("consent-section");
 
 // "다시 분석하기" 버튼 추가
 retryBtn.textContent = "다시 분석하기";
@@ -22,7 +23,7 @@ retryBtn.style.marginRight = "20px";
 retryBtn.style.display = "none";
 resultSection.appendChild(retryBtn);
 
-// 이미지 업로드 핸들러 (파일 선택)
+// 이미지 업로드 핸들러
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
@@ -30,16 +31,14 @@ fileInput.addEventListener("change", () => {
         reader.onload = (e) => {
             imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
             analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+            consentSection.style.display = "block"; // 동의 체크박스 표시
         };
         reader.readAsDataURL(file);
-    } else {
-        imagePreview.innerHTML = "<p>No image uploaded yet.</p>";
-        analyzeBtn.style.display = "none";
     }
 });
 
 // 클립보드 이미지 붙여넣기 처리
-imagePreview.addEventListener("paste", (event) => {
+document.addEventListener("paste", (event) => {
     const items = event.clipboardData.items;
 
     for (let i = 0; i < items.length; i++) {
@@ -47,8 +46,15 @@ imagePreview.addEventListener("paste", (event) => {
         if (item.type.startsWith("image/")) {
             const file = item.getAsFile();
             if (file) {
-                handleFileUpload(file);
+                // 파일을 fileInput에 추가
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files; // fileInput의 파일 목록 업데이트
+
+                handleFileUpload(file); // 파일 업로드 처리
                 analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+                consentSection.style.display = "block"; // 동의 체크박스 표시
+                break; // 첫 번째 이미지 파일만 처리
             }
         }
     }
@@ -59,7 +65,7 @@ function handleFileUpload(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
         imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
-        generatePdfButton.style.display = "inline-block"; // PDF 저장 버튼 표시
+        analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
     };
     reader.readAsDataURL(file);
 }
@@ -108,6 +114,15 @@ analyzeBtn.addEventListener('click', async () => {
         loadingSection.classList.remove('active');
         resultSection.classList.add('active');
     }
+    setTimeout(() => {
+        loadingSection.classList.remove('active');
+        resultSection.classList.add('active');
+
+        // 차트 애니메이션 실행
+        fakeProbability = Math.floor(Math.random() * 101);
+        animateChart(fakeProbability);
+
+    }, 3000); // 3초 동안 로딩 상태 유지
 });
 
 // 차트 애니메이션 함수
@@ -116,9 +131,13 @@ function animateChart(targetPercentage) {
     const interval = setInterval(() => {
         const angle = currentPercentage * 3.6;
 
-        // 색상 변경
-        let color = currentPercentage < 30 ? '#ff5722' :
-            currentPercentage < 70 ? '#ffc107' : '#4caf50';
+        // 색상 변경 로직
+        let color = "#4caf50"; // Default green
+        if (currentPercentage < 30) {
+            color = "#ff5722"; // Red for low percentages
+        } else if (currentPercentage < 70) {
+            color = "#ffc107"; // Yellow for mid percentages
+        }
 
         chart.style.background = `conic-gradient(${color} 0deg ${angle}deg, #ccc ${angle}deg 360deg)`;
         percentageText.textContent = `${currentPercentage}%`;
@@ -143,14 +162,22 @@ retryBtn.addEventListener("click", () => {
     resultSection.classList.remove("active");
     uploadSection.classList.add("active");
     analyzeBtn.style.display = "none";
-    imagePreview.innerHTML = "이미지를 올려주세요";
+    imagePreview.innerHTML = "이미지를 올려주세요 또는 Ctrl+ V";
     retryBtn.style.display = "none";
     document.getElementById("generate-pdf").style.display = "none"; // PDF 버튼 숨기기
     chart.style.background = "conic-gradient(#ccc 0deg 360deg)";
+    consentSection.style.display = "none"; // 동의 섹션 숨김
     percentageText.textContent = "0";
+    // 파일 입력 필드 초기화
+    fileInput.value = ""; // 파일 입력 필드의 value를 초기화하여 같은 파일도 업로드 가능하도록 설정
+
+    // 동의 체크박스 초기화
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    if (assentCheckbox) {
+        assentCheckbox.checked = false; // 체크박스 해제
+        consentSection.style.display = "none"; // 동의 섹션 숨기기
+    }
 });
-
-
 
 document.getElementById("generate-pdf").addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
@@ -403,3 +430,198 @@ window.onload = async () => {
     await checkSession();
     await sendDeviceInfoToServer();
 };
+
+// upload
+document.addEventListener("DOMContentLoaded", () => {
+    const fileInput = document.getElementById("file-upload");
+    const analyzeButton = document.getElementById("analyze-btn");
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    const imagePreview = document.getElementById("image-preview");
+    const uploadSection = document.getElementById("upload-section");
+    const loadingSection = document.getElementById("loading-section");
+    const resultSection = document.getElementById("result-section");
+    const percentageSpan = document.getElementById("percentage");
+
+    // 동의 체크박스 클릭 시 알림
+
+    // 세션 ID 가져오기 함수
+    async function getSessionIdx() {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/session", { // 확인
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                const sessionData = await response.json();
+                return sessionData.session_idx; // 응답 구조에 맞게 수정
+            } else {
+                console.error("세션 정보 가져오기 실패:", response.status);
+                return null;
+            }
+        } catch (error) {
+            console.error("세션 정보 요청 중 오류:", error);
+            return null;
+        }
+    }
+
+    // Analyze 버튼 클릭 이벤트
+    analyzeButton.addEventListener("click", async () => {
+        if (fileInput.files.length === 0) {
+            alert("이미지를 업로드해주세요.");
+            return;
+        }
+
+        const assent_yn = assentCheckbox.checked ? "Y" : "N";
+        if (assent_yn === "N") { // 동의하지 않은 경우 처리
+            alert("동의하지 않으면 데이터를 저장할 수 없습니다.");
+            return;
+        }
+
+        // 세션 ID 가져오기
+        const session_idx = await getSessionIdx();
+        if (!session_idx) {
+            alert("세션 정보를 가져오는 데 실패했습니다. 다시 시도해주세요.");
+            return;
+        }
+
+        // 로딩 상태 활성화
+        loadingSection.classList.add("active");
+
+        // FormData 생성
+        const formData = new FormData();
+        formData.append("image_file", fileInput.files[0]);
+        formData.append("assent_yn", assent_yn);
+        formData.append("model_pred", "0.987654321");
+        formData.append("session_idx", session_idx); // 세션 ID 추가
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/upload", {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("서버 응답:", result);
+
+            // 분석 결과 표시
+            loadingSection.classList.remove("active"); // 로딩 종료
+            resultSection.classList.add("active");
+            percentageSpan.textContent = (result.model_pred * 100).toFixed(2); // 결과 표시
+        } catch (error) {
+            console.error("업로드 중 오류:", error);
+            alert("업로드 실패. 서버와 연결할 수 없습니다.");
+        }
+    });
+});
+// 모달 열기 시 페이지 스크롤 비활성화
+function disableScroll() {
+    document.body.style.overflow = "hidden"; // 페이지 스크롤 비활성화
+}
+
+// 모달 닫기 시 페이지 스크롤 활성화
+function enableScroll() {
+    document.body.style.overflow = ""; // 페이지 스크롤 복구
+}
+
+// 모달창
+document.addEventListener("DOMContentLoaded", () => {
+    const assentCheckbox = document.getElementById("assent-checkbox");
+    const termsModal = document.getElementById("terms-modal");
+    const modalConfirmBtn = document.getElementById("confirm-btn");
+    const closeTermsBtn = document.getElementById("close-terms");
+    const allAgreeCheckbox = document.getElementById("all-agree-checkbox");
+    const radios = document.querySelectorAll("input[type=radio]");
+
+
+    // 모달 초기화 함수
+    function resetModal() {
+        allAgreeCheckbox.checked = false; // 전체 동의 체크박스 해제
+        radios.forEach(radio => {
+            radio.checked = false; // 모든 라디오 버튼 체크 해제
+        });
+        modalConfirmBtn.disabled = true; // 확인 버튼 비활성화
+    }
+
+    // 동의 체크박스 클릭 시 모달 열기
+    assentCheckbox.addEventListener("change", () => {
+        if (assentCheckbox.checked) {
+            resetModal(); // 모달 상태 초기화
+            termsModal.style.display = "flex"; // 모달 열기
+            disableScroll(); // 스크롤 비활성화
+        } else {
+            alert("동의를 해제하셨습니다.");
+        }
+    });
+
+    // 모달에서 "확인" 버튼 클릭 시
+    modalConfirmBtn.addEventListener("click", () => {
+        termsModal.style.display = "none"; // 모달 닫기
+        enableScroll(); // 스크롤 활성화
+        alert("약관에 동의하셨습니다.");
+    });
+
+    // 모달 닫기 버튼 클릭 시
+    closeTermsBtn.addEventListener("click", () => {
+        termsModal.style.display = "none"; // 모달 닫기
+        assentCheckbox.checked = false; // 동의 체크박스 해제
+        enableScroll(); // 스크롤 활성화
+        resetModal(); // 모달 초기화
+    });
+
+    // 모달 외부 클릭 시 닫기
+    termsModal.addEventListener("click", (event) => {
+        if (event.target === termsModal) {
+            termsModal.style.display = "none";
+            assentCheckbox.checked = false; // 동의 체크박스 해제
+            resetModal(); // 모달 초기화
+        }
+    });
+
+    // 전체 동의 체크박스 이벤트
+    allAgreeCheckbox.addEventListener("change", () => {
+        const isChecked = allAgreeCheckbox.checked;
+
+        document.querySelectorAll(".terms-section").forEach(section => {
+            const inputs = section.querySelectorAll("input[type=radio]");
+            if (isChecked) {
+                inputs[0].checked = true; // "동의함" 선택
+            } else {
+                inputs.forEach(input => {
+                    input.checked = false; // 모든 라디오 버튼 체크 해제
+                });
+            }
+        });
+
+        updateConfirmButtonState();
+    });
+
+    // 개별 약관 동의 이벤트
+    radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            updateConfirmButtonState();
+            if (!allTermsAgreed()) {
+                allAgreeCheckbox.checked = false; // 개별적으로 동의 해제 시 전체 동의 해제
+            }
+        });
+    });
+
+    // 약관 동의 상태 확인 및 버튼 활성화 업데이트
+    function updateConfirmButtonState() {
+        const allChecked = allTermsAgreed();
+        modalConfirmBtn.disabled = !allChecked;
+    }
+
+    // 모든 필수 항목이 동의되었는지 확인
+    function allTermsAgreed() {
+        return [...document.querySelectorAll(".terms-section")].every(section => {
+            const inputs = section.querySelectorAll("input[type=radio]");
+            return [...inputs].some(input => input.checked && input.value === "agree");
+        });
+    }
+});
