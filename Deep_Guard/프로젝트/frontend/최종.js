@@ -23,14 +23,18 @@ retryBtn.style.marginRight = "20px";
 retryBtn.style.display = "none";
 resultSection.appendChild(retryBtn);
 
-// PDF 저장 버튼 추가
-
 
 // 이미지 업로드 핸들러
 fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) {
-        handleFileUpload(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+            analyzeBtn.style.display = "inline-block"; // Analyze 버튼 표시
+            consentSection.style.display = "block"; // 동의 체크박스 표시
+        };
+        reader.readAsDataURL(file);
     }
 });
 
