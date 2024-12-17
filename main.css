@@ -93,7 +93,7 @@ body {
 @media (max-width: 1024px) {
     .header {
         padding: 2% 3%;
-        border-bottom: 0.35rem solid black;
+        /* border-bottom: 0.35rem solid black; */
     }
 
     .header .logo {
@@ -112,7 +112,7 @@ body {
 @media (max-width: 768px) {
     .header {
         padding: 1.5% 2.5%;
-        border-bottom: 0.3rem solid black;
+        /* border-bottom: 0.3rem solid black; */
     }
 
     .header .logo {
@@ -131,7 +131,7 @@ body {
 @media (max-width: 480px) {
     .header {
         padding: 1% 2%;
-        border-bottom: 0.25rem solid black;
+        /* border-bottom: 0.25rem solid black; */
         flex-direction: column;
         /* 모바일 화면에서는 세로 정렬 */
     }
@@ -375,6 +375,126 @@ main p {
     font-size: 24px;
     font-weight: bold;
 }
+
+/* 모달창 스타일 */
+#terms-modal {
+    display: none; /* 웹페이지 열릴 때 기본적으로 숨김 처리 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 80vh;
+    position: relative;
+}
+
+.modal-content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333333;
+    text-align: center;
+}
+
+.modal-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555555;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.terms-section {
+    margin-bottom: 20px;
+}
+
+.terms-section p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.terms-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.agree-options {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 버튼 컨테이너 스타일 */
+.btn-container {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 우측 정렬 */
+    gap: 10px; /* 버튼 간 간격 */
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+#close-terms {
+    background-color: #ff4d4d;
+    width: auto; /* 버튼 크기 맞춤 */
+}
+
+#close-terms:hover {
+    background-color: #e63939;
+}
+
+#confirm-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#confirm-btn {
+    background-color: #007bff;
+}
+
+/* 스크롤바 스타일 */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 5px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
 
 /* 차트 */
 .chart {
