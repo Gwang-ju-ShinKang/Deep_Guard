@@ -15,6 +15,7 @@ class UploadInfo(Base):
     image_data = Column(Text, nullable=False)  # MEDIUMTEXT
     deepfake_data = Column(Text, nullable=False)  # MEDIUMTEXT
     model_pred = Column(DECIMAL(13, 10), nullable=False)  # DECIMAL(13,10)
+    session_created_at = Column(DateTime, server_default=func.now(), nullable=False)
     session_idx = Column(Integer, nullable=False)  # INT
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
