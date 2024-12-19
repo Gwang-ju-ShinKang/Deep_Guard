@@ -24,10 +24,10 @@ class ImageBackupInfo(Base):
 
     imgage_idx = Column(BigInteger, primary_key=True, index=True)
     deepfake_image_file = Column(Text)
-    deepfake_data = Column(Text nullable=False)
-    session_idx = Column(Integer ForeignKey('session_info.session_idx'), nullable=False)
-    created_at = Column(DateTime nullable=False)
-    model_pred = Column(Numeric nullable=False)
+    deepfake_data = Column(Text ,nullable=False)
+    session_idx = Column(Integer ,ForeignKey('session_info.session_idx'), nullable=False)
+    created_at = Column(DateTime ,nullable=False)
+    model_pred = Column(Numeric ,nullable=False)
 
 # session info 테이블
 class SessionInfo(Base):

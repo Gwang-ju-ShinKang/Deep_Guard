@@ -4,11 +4,11 @@ from fastapi import FastAPI, Depends, UploadFile, File, Form,HTTPException, Requ
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from itsdangerous import URLSafeTimedSerializer
-from models import Base, UserInfo, UploadInfo, SessionInfo
+from models import Base, UploadInfo, SessionInfo
 from PIL import Image
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 from typing import List
 import io
 import json
@@ -41,16 +41,13 @@ def get_db():
         db.close()
 
 # API 엔드포인트: 모든 데이터 가져오기
-@app.get("/items")
-def read_items(db: Session = Depends(get_db)):
-    items = db.query(UserInfo).all()
-    return items
 
 @app.get("/image")
 def read_items(db: Session = Depends(get_db)):
     items = db.query(UploadInfo).all()
     return items
 
+app.state.latest_session_idx = None
 
 # Secret Key와 Serializer 설정
 SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")

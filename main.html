@@ -27,16 +27,23 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <a href="./main.html">
-            <div class="logo">&nbsp;DEEP GUARD</div>
-        </a>
+        <div class="logo">DEEP GUARD</div>
         <nav>
-            <a href="#1">분석하기</a>
-            <a onclick="goToScroll('main2')">딥페이크 현황</a>
-            <a onclick="goToScroll('main3')">신고센터</a>
-            <a onclick="goToScroll('main4')">범죄예방수칙</a>
+            <div class="dropdown">
+                <a href="#" class="dropdown-btn">분석하기</a>
+                <div class="dropdown-content">
+                    <a href="#deepfake">딥페이크</a>
+                    <a href="#voice-phishing">보이스피싱</a>
+                    <a href="#crypto">암호화폐</a>
+                    <a href="#id-fraud">위조 신분증</a>
+                </div>
+            </div>
+            <a href="#deepfake-status">딥페이크 현황</a>
+            <a href="#report-center">신고센터</a>
+            <a href="#crime-prevention">범죄예방수칙</a>
         </nav>
     </div>
+
     <!-- Main Content -->
     <div class="container">
         <div class="text-content">
