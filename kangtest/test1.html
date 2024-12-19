@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="test1.css">
+    <title>게시판</title>
+</head>
+
+<body>
+    <div class="topBar">
+        <div class="header">
+            <a href="#" class="logo">게시판</a>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#write">글쓰기</a>
+                <a href="#list">목록</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 게시판 목록 섹션 -->
+        <div id="listSection">
+            <div class="board-header">
+                <h1>게시판</h1>
+                <p>게시물을 자유롭게 확인하고 작성하세요!</p>
+            </div>
+
+            <table class="post-list">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>조회수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="#">게시물 제목 1</a></td>
+                        <td>홍길동</td>
+                        <td>2024-12-19</td>
+                        <td>120</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">&raquo;</a>
+            </div>
+        </div>
+
+        <!-- 글쓰기 섹션 -->
+        <div id="writeSection" style="display: none;"></div>
+    </div>
+
+    <script src="test1.js"></script>
+</body>
+
+</html>

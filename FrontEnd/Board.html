@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Board.css">
+    <title>게시판</title>
+    <style>
+        /* 스타일은 아래에서 설명 */
+    </style>
+</head>
+
+<body>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="container">
+        <!-- 게시판 헤더 -->
+        <div class="board-header">
+            <h1>게시판</h1>
+            <p>게시물을 자유롭게 확인하고 작성하세요!</p>
+        </div>
+
+        <!-- 게시글 목록 -->
+        <div id="list">
+            <table class="post-list">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>조회수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="#">게시물 제목 1</a></td>
+                        <td>홍길동</td>
+                        <td>2024-12-19</td>
+                        <td>120</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><a href="#">게시물 제목 2</a></td>
+                        <td>김철수</td>
+                        <td>2024-12-18</td>
+                        <td>95</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><a href="#">게시물 제목 3</a></td>
+                        <td>이영희</td>
+                        <td>2024-12-17</td>
+                        <td>80</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지 네이션 -->
+        <div class="pagination">
+            <a href="#">&laquo;</a>
+            <a href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">&raquo;</a>
+        </div>
+
+        <!-- 글쓰기 버튼 -->
+        <div id="write">
+            <a href="#" class="write-button">글쓰기</a>
+        </div>
+    </div>
+</body>
+
+</html>
