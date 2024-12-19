@@ -39,11 +39,19 @@ retryBtn.addEventListener("click", () => {
     fileInput.value = ""; // 파일 입력 필드의 value를 초기화하여 같은 파일도 업로드 가능하도록 설정
 
     // 동의 체크박스 초기화
-    const assentCheckbox = document.getElementById("assent-checkbox");
+    // const assentCheckbox = document.getElementById("assent-checkbox");
     if (assentCheckbox) {
         assentCheckbox.checked = false; // 체크박스 해제
         consentSection.style.display = "none"; // 동의 섹션 숨기기
     }
+
+    // fakeProbability와 currentPercentage 초기화 (새 분석을 위한 준비)
+    fakeProbability = 0; // 이전 결과 초기화
+    currentPercentage = 0; // 차트 애니메이션을 위한 currentPercentage 초기화
+    chart.style.background = "conic-gradient(#ccc 0deg 360deg)"; // 차트 초기화
+    percentageText.textContent = "0"; // 차트 텍스트 초기화
+
+    cancelAnimationFrame(animationFrameId); // 애니메이션 중단
 });
 
 // 이미지 업로드 핸들러
@@ -94,7 +102,7 @@ function handleFileUpload(file) {
 }
 
 // 분석 버튼 핸들러
-let fakeProbability = 0; // 정확도 값을 저장할 변수
+// let fakeProbability = 0; // 정확도 값을 저장할 변수
 analyzeBtn.addEventListener('click', async () => {
     const file = fileInput.files[0];
     if (!file) return alert('이미지를 업로드 해주세요.');
@@ -144,18 +152,15 @@ analyzeBtn.addEventListener('click', async () => {
         loadingSection.classList.remove('active');
         resultSection.classList.add('active');
 
-        /* // 차트 애니메이션 실행
-        fakeProbability = Math.floor(Math.random() * 101);
-        animateChart(fakeProbability);
- */
     }, 3000); // 3초 동안 로딩 상태 유지
 });
 
 // 차트 애니메이션 함수
-let currentPercentage = 0;
+// let currentPercentage = 0;
+// let animationFrameId; // 애니메이션 ID 저장
 
 function animateChart(targetPercentage) {
-
+    currentPercentage = 0;
     function updateChart() {
         const angle = currentPercentage * 3.6;
         let color = currentPercentage < 30 ? "#ff5722"
@@ -166,14 +171,14 @@ function animateChart(targetPercentage) {
 
         if (currentPercentage < targetPercentage) {
             currentPercentage++;
-            requestAnimationFrame(updateChart);
+            animationFrameId = requestAnimationFrame(updateChart);
         } else {
             retryBtn.style.display = "inline-block";
             document.getElementById("generate-pdf").style.display = "inline-block";
         }
     }
 
-    requestAnimationFrame(updateChart);
+    animationFrameId = requestAnimationFrame(updateChart);
 }
 
 
