@@ -294,6 +294,7 @@ async def upload_file(
     assent_yn: str = Form(...),
     model_pred: float = Form(...),
     db: Session = Depends(get_db)
+    
 ):
     try:
         # 전역 상태에서 session_idx 가져오기
