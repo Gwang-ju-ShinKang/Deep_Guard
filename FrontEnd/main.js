@@ -244,7 +244,7 @@ document.getElementById("generate-pdf").addEventListener("click", () => {
 
     // 인증서 배경 이미지 경로
     const img = new Image();
-    img.src = 'image/ㅁㅁ.png'; // 인증서 배경 이미지 경로를 정확히 입력해주세요.
+    img.src = './Images/ㅁㅁ.png'; // 인증서 배경 이미지 경로를 정확히 입력해주세요.
 
     img.onload = function () {
         // 이미지의 원본 크기 유지
