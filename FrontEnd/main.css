@@ -19,21 +19,16 @@ body {
     width: 100%;
     z-index: 1000;
     position: fixed;
-    width: 100%;
-    padding-bottom: 1%;
-    padding-top: 1%;
+    padding: 1% 0;
 }
 
 .header {
-    position: relative;
-    width: 70%;
-    left: 15%;
-    box-sizing: border-box;
-    /* background-color: white; */
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    padding: 0 20px;
 }
 
 .logo {
@@ -70,16 +65,10 @@ body {
 }
 
 .header .logo {
-
     text-decoration: none;
     font-size: clamp(1.8rem, 2vw, 3rem);
     font-weight: bold;
 }
-
-/* .header a {
-    text-decoration: none;
-    color: black;
-} */
 
 .header nav a {
     font-size: clamp(1rem, 1.5vw, 1.5rem);
@@ -374,7 +363,8 @@ main p {
 
 /* 모달창 스타일 */
 #terms-modal {
-    display: none; /* 웹페이지 열릴 때 기본적으로 숨김 처리 */
+    display: none;
+    /* 웹페이지 열릴 때 기본적으로 숨김 처리 */
     position: fixed;
     top: 0;
     left: 0;
@@ -439,8 +429,10 @@ main p {
 /* 버튼 컨테이너 스타일 */
 .btn-container {
     display: flex;
-    justify-content: flex-end; /* 버튼을 우측 정렬 */
-    gap: 10px; /* 버튼 간 간격 */
+    justify-content: flex-end;
+    /* 버튼을 우측 정렬 */
+    gap: 10px;
+    /* 버튼 간 간격 */
     margin-top: 20px;
 }
 
@@ -461,7 +453,8 @@ main p {
 
 #close-terms {
     background-color: #ff4d4d;
-    width: auto; /* 버튼 크기 맞춤 */
+    width: auto;
+    /* 버튼 크기 맞춤 */
 }
 
 #close-terms:hover {
@@ -527,19 +520,15 @@ main p {
 
 /* 메인 2 */
 #main2 {
-    /* position: relative;
-    top: -12rem;
-    padding: 2vw;
-    background-color: #f8f8f8;
-    padding-bottom: 8%; */
     position: relative;
     display: flex;
     height: 100%;
     align-items: center;
     background-color: #f8f8f8;
     color: #333;
-    padding-top: 150px;
+    padding-top: 200px;
     justify-content: space-evenly;
+
 }
 
 .containert {
@@ -667,12 +656,6 @@ main p {
 }
 
 
-/* 메인3 */
-#submain2 {
-    height: 100px;
-    background-image: linear-gradient(to bottom, #c9c2c2, #adadad);
-}
-
 #main3 {
     /* margin: 0; */
     padding: 0;
@@ -757,7 +740,7 @@ main p {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    margin-top: -   0.5rem;
+    margin-top: - 0.5rem;
 }
 
 .card3 {
@@ -823,8 +806,8 @@ main p {
     color: #333;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    padding-top: 7.5%;
-    height: 87%;
+    padding-top: 9%;
+    height: 83%;
 }
 
 .main4Container {
@@ -832,7 +815,7 @@ main p {
     bottom: clamp(1vw, 3vw, 6rem);
     max-width: 70%;
     margin: 0 auto;
-    box-sizing: border-box;   
+    box-sizing: border-box;
 }
 
 .header4 {
@@ -844,7 +827,7 @@ main p {
     border-bottom: 2px solid #ddd;
 }
 
-.header4 h1{
+.header4 h1 {
     margin-bottom: 0.3rem;
 }
 
@@ -916,19 +899,19 @@ main p {
 
 /* 화면 너비 768px 이하 */
 @media (max-width: 768px) {
-    
+
     /* main4의 내부 여백과 배치 조정 */
     #main4 {
         padding-bottom: 12%;
         /* 패딩을 추가하여 더 많은 공간을 확보함 */
     }
-    
+
     /* main4Container의 너비 조정 */
     .main4Container {
         max-width: 95%;
         /* 최대 너비를 더 줄여 모바일에 적합하게 함 */
     }
-    
+
     /* content 내부 패딩 및 정렬 조정 */
     .content {
         padding: 1rem;
@@ -936,7 +919,7 @@ main p {
         padding-left: 1rem;
         /* 왼쪽 패딩을 더 줄여 공간을 절약 */
     }
-    
+
     /* rules-container의 배치를 단일 열로 변경 */
     .rules-container {
         flex-direction: column;
@@ -948,25 +931,25 @@ main p {
 
 /* 화면 너비 480px 이하 */
 @media (max-width: 480px) {
-    
+
     /* main4의 내부 여백과 배치 조정 */
     #main4 {
         padding-bottom: 15%;
         /* 모바일에 더 넉넉한 패딩을 추가 */
     }
-    
+
     /* main4Container의 너비 조정 */
     .main4Container {
         max-width: 100%;
         /* 모바일에 맞춰 최대 너비를 100%로 설정 */
     }
-    
+
     /* content 내부 패딩 및 정렬 조정 */
     .content {
         padding: 0.5rem;
         /* 내부 패딩을 줄여 공간 절약 */
     }
-    
+
     /* rules-container의 배치를 단일 열로 변경 */
     .rules-container {
         flex-direction: column;
@@ -974,19 +957,20 @@ main p {
         gap: 1rem;
         /* 간격을 줄여 화면에 더 적합하게 함 */
     }
-    
+
     /* rule 제목의 글꼴 크기 조정 */
     .rule h2 {
         font-size: 1.2em;
         /* 글꼴 크기를 줄여 모바일에 맞춤 */
     }
-    
+
     /* rule 항목의 글꼴 크기 조정 */
     .rule ul li {
         font-size: 0.8em;
         /* 글꼴 크기를 줄여 모바일에 맞춤 */
     }
 }
+
 .footer {
     position: relative;
     bottom: 20%;

@@ -19,20 +19,17 @@ class UploadInfo(Base):
     session_idx = Column(Integer, nullable=False)  # INT
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
-# 이미지 업로드 백업 테이블 
 class ImageBackupInfo(Base):
     __tablename__ = "image_backup_info"
 
-    backup_idx = Column(BigInteger, primary_key=True, index=True)
-    original_image_file = Column(String(1000))
-    image_data = Column(Text)
-    deepfake_data = Column(Text)
-    log_device = Column(String(50))
-    log_session = Column(String(300))
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
-    user_id = Column(String(50), default="anonymous")
-    model_pred = Column(Numeric)
-
+    # 테이블 컬럼 정의
+    backup_idx = Column(Integer, primary_key=True, autoincrement=True, nullable=False)  # Primary Key
+    deepfake_image_file = Column(Text, nullable=True)  # MEDIUMTEXT (Base64 인코딩된 이미지 데이터)
+    deepfake_data = Column(Text, nullable=True)  # MEDIUMTEXT (딥페이크 관련 데이터)
+    session_idx = Column(Integer, nullable=True)  # 세션 식별자
+    created_at = Column(DateTime, server_default=func.now(), nullable=True)  # 레코드 생성 시간
+    model_pred = Column(Numeric(13, 10), nullable=True)  # DECIMAL(13,10) (모델 예측 확률값)
+    assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
 class SessionInfo(Base):
     __tablename__ = "session_info"
