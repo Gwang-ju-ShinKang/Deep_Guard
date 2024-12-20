@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from datetime import datetime, timezone, timedelta
-from models import Base, UploadInfo, SessionInfo, DeviceInfo
+from models import Base, UploadInfo, SessionInfo, DeviceInfo, ImageBackupInfo
 from itsdangerous import URLSafeTimedSerializer
 from PIL import Image
 from pydantic import BaseModel
@@ -294,58 +294,66 @@ async def upload_file(
     assent_yn: str = Form(...),
     model_pred: float = Form(...),
     db: Session = Depends(get_db)
-    
 ):
     try:
         # 전역 상태에서 session_idx 가져오기
         session_idx = app.state.session_idx
 
-        # 1️⃣ 파일 처리 (Base64로 인코딩)
+        # 파일 처리 (Base64로 인코딩)
         content = await image_file.read()
         if not content:
             raise HTTPException(status_code=400, detail="업로드된 파일이 비어 있습니다.")
         
-        image = Image.open(io.BytesIO(content))  # 바이너리 데이터를 이미지로 변환
-        image_array = preprocess_image(image)  # 이미지를 전처리하여 224x224로 변환
-        encoded_image = base64.b64encode(content).decode("utf-8")  # Base64 인코딩
-        print(f"🖼️ 예측에 사용된 입력 데이터 크기: {image_array.shape}")
-        print("📷 Encoded image size:", len(encoded_image))
+        # Base64로 이미지 인코딩
+        encoded_image = base64.b64encode(content).decode("utf-8")
 
-        # 2️⃣ 모델을 통해 예측
+        # 모델 예측 결과 처리 (기존 로직 포함)
         if model is None:
             raise HTTPException(status_code=500, detail="모델이 로드되지 않았습니다.")
         
         try:
-            prediction = model.predict(image_array)  # 이미지를 예측
+            prediction = model.predict(preprocess_image(Image.open(io.BytesIO(content))))
             print(f"✅ 예측 결과: {prediction}")
-            model_pred = float(prediction[0][0])  # 예측 확률을 추출 (이진 분류의 경우)
+            model_pred = float(prediction[0][0])  # 예측 확률 추출
         except Exception as e:
-            print(f"❌ TensorFlow 예측 오류: {e}")
+            print(f"❌ 모델 예측 오류: {e}")
             raise HTTPException(status_code=500, detail="예측 중 오류가 발생했습니다.")
 
-        # 3️⃣ 데이터베이스에 엔트리 추가
-        db_entry = UploadInfo(
-            image_data=encoded_image,
-            deepfake_data="placeholder_data",  # 예측 결과와 관련된 데이터를 저장
-            model_pred=model_pred,  # 모델의 예측 결과 저장
-            session_idx=session_idx,  # 세션 인덱스 저장
-            assent_yn=assent_yn,  # 동의 여부
-        )
-        db.add(db_entry)
+        # 동의 여부에 따라 데이터 처리
+        if assent_yn == 'Y':
+            # image_backup_info에 데이터 삽입
+            backup_entry = ImageBackupInfo(
+                deepfake_image_file=encoded_image,
+                deepfake_data="placeholder_data",  # 예측 관련 데이터
+                session_idx=session_idx,
+                model_pred=model_pred,
+                assent_yn=assent_yn
+            )
+            db.add(backup_entry)
+        elif assent_yn == 'N':
+            # upload_info에 데이터 삽입
+            upload_entry = UploadInfo(
+                image_data=encoded_image,
+                deepfake_data="placeholder_data",
+                model_pred=model_pred,
+                session_idx=session_idx,
+                assent_yn=assent_yn
+            )
+            db.add(upload_entry)
+        else:
+            raise HTTPException(status_code=400, detail="assent_yn 값이 유효하지 않습니다. (Y 또는 N)")
+
+        # 변경 사항 저장
         db.commit()
-        db.refresh(db_entry)
 
-        # 4️⃣ 클라이언트에 예측 결과 및 파일 ID 반환
-        result = {"status": "success", "data": prediction.tolist()}
-        return JSONResponse(content=result)
-
-    except HTTPException as http_ex:
-        raise http_ex  # HTTPException은 다시 발생시킴
+        return {"status": "success", "message": "데이터가 성공적으로 저장되었습니다."}
 
     except Exception as e:
+        db.rollback()
         print(f"❌ 서버 오류 발생: {e}")
-        return JSONResponse(content={"error": f"서버 오류: {str(e)}"})
-
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        db.close()
 
 if __name__ == "__main__":
     import uvicorn
