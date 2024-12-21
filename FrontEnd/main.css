@@ -233,16 +233,12 @@ body {
 .text-content {
     position: relative;
     top: 30%;
-    /* left: 16%; */
     flex: 0 0 clamp(20%, 30vw, 30%);
-    /* 최소 20%, 최대 30%, 기본값 30vw */
     max-width: clamp(20%, 30vw, 30%);
-    /* 크기를 창 크기에 비례해 조정 */
     padding: 0 clamp(2px, 1vw, 2%);
-    /* 창 크기에 따라 패딩 조정 */
     height: 100%;
-    /* 텍스트 높이를 100%로 설정 */
     overflow: hidden;
+    z-index: 1;
 }
 
 
@@ -253,7 +249,7 @@ body {
 
 .text-content p {
     margin: clamp(10px, 3vw, 20px) 0;
-    font-size: clamp(0.9rem, 0.5vw, 1.1rem);
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     color: #555;
 }
 
@@ -261,7 +257,7 @@ body {
     display: inline-block;
     margin-top: clamp(10px, 2vw, 20px);
     padding: clamp(8px, 1vw, 10px) clamp(16px, 2vw, 20px);
-    font-size: clamp(0.8rem, 1vw, 1rem);
+    font-size: clamp(0.8rem, 1.3vw, 1.5rem);
     text-decoration: none;
     color: white;
     background-color: #4A5246;
