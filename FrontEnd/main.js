@@ -440,6 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const allAgreeCheckbox = document.getElementById("all-agree-checkbox");
     const radios = document.querySelectorAll("input[type=radio]");
 
+
     // 모달 초기화 함수
     function resetModal() {
         allAgreeCheckbox.checked = false; // 전체 동의 체크박스 해제
