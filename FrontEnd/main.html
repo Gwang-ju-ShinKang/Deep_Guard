@@ -99,7 +99,7 @@
                 <label for="file-upload" class="upload-btn">사진 선택</label>
 
                 <div class="btnSection" style="display: none;">
-                    <label for="file-upload" id="analyze-btn" class="upload-btn">사진 선택</label>
+                    <label for="file-upload" class="upload-btn">사진 선택</label>
                     <button class="upload-btn" id="analyze-btn"><span class="anFont">분석하기</span></button>
                 </div></button>
             </div>
@@ -110,8 +110,6 @@
 
                     <h1>약관 동의</h1>
                     <p>딥페이크 분석 서비스 사용을 위해 아래의 약관에 동의해주세요. 선택 사항에 따라 일부 기능 사용이 제한될 수 있습니다.</p>
-
-
 
                     <div class="terms-section">
                         <div class="terms-header">[필수] 민감정보 수집 및 이용</div>
@@ -171,21 +169,21 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Loading Section -->
-        <div class="section" id="loading-section">
-            <h2>분석 중...</h2>
-            <div class="analyzing">이미지를 분석 중입니다. 잠시만 기다려주세요...</div>
-        </div>
 
-        <!-- Result Section -->
-        <div class="section" id="result-section">
-            <h1>결과 확인</h1><br>
-            <div class="chart" id="chart"></div>
-            <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span>%</p>
-            <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
-        </div>
+            <!-- Loading Section -->
+            <div class="section" id="loading-section">
+                <h2>분석 중...</h2>
+                <div class="analyzing">이미지를 분석 중입니다. 잠시만 기다려주세요...</div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="section" id="result-section">
+                <h1>결과 확인</h1><br>
+                <div class="chart" id="chart"></div>
+                <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span>%</p>
+                <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
+            </div>
         </div>
     </main>
 
@@ -217,88 +215,8 @@
                     <button class="upload-btn" id="analyze-btn"><span class="anFont">분석하기</span></button>
                 </div>
 
-                <!-- 모달 -->
-                <div id="terms-modal" style="display: none;">
-                    <div class="modal-content">
-
-                        <h1>약관 동의</h1>
-                        <p>딥페이크 분석 서비스 사용을 위해 아래의 약관에 동의해주세요. 선택 사항에 따라 일부 기능 사용이 제한될 수 있습니다.</p>
-
-
-
-                        <div class="terms-section">
-                            <div class="terms-header">[필수] 민감정보 수집 및 이용</div>
-                            <p>딥페이크 분석 과정에서 제공된 이미지 데이터가 민감정보에 해당될 수 있습니다. 해당 데이터를 분석 목적으로 처리하며, 분석 완료 후 삭제됩니다.</p>
-                            <p>"정보통신망법에 따라 필요한 경우 수사기관에 협조하기 위해 1개월 보관합니다."</p>
-                            <div class="agree-options">
-                                <input type="radio" id="sensitive-agree" name="sensitive" value="agree">
-                                <label for="sensitive-agree">동의함</label>
-                                <input type="radio" id="sensitive-disagree" name="sensitive" value="disagree">
-                                <label for="sensitive-disagree">동의안함</label>
-                            </div>
-                        </div>
-
-                        <div class="terms-section">
-                            <div class="terms-header">[필수] 개인정보 수집 및 이용</div>
-                            <p>딥페이크 분석 서비스를 제공하기 위해 세션 ID와 사용자 디바이스 정보를 수집하며, 수집된 정보는 보안 목적으로만 사용됩니다.</p>
-                            <div class="agree-options">
-                                <input type="radio" id="personal-agree" name="personal" value="agree">
-                                <label for="personal-agree">동의함</label>
-                                <input type="radio" id="personal-disagree" name="personal" value="disagree">
-                                <label for="personal-disagree">동의안함</label>
-                            </div>
-                        </div>
-
-                        <div class="terms-section">
-                            <div class="terms-header">[필수] 서비스 개선을 위한 데이터 제공</div>
-                            <p>분석결과와 관련자료는 익명화되어 서비스 개선 및 연구 목적으로 활용될 수 있습니다.</p>
-                            <p>"동의 시 데이터는 3년 동안 보관됩니다."</p>
-                            <div class="agree-options">
-                                <input type="radio" id="improve-agree" name="improve" value="agree">
-                                <label for="improve-agree">동의함</label>
-                                <input type="radio" id="improve-disagree" name="improve" value="disagree">
-                                <label for="improve-disagree">동의안함</label>
-                            </div>
-                        </div>
-
-                        <div class="terms-section">
-                            <div class="terms-header">[필수] 딥페이크 분석 결과 저장 및 이용</div>
-                            <p>분석 결과를 저장하고, 사용자가 요청할 경우 해당 결과를 삭제할 수 있습니다.</p>
-                            <div class="agree-options">
-                                <input type="radio" id="result-agree" name="result" value="agree">
-                                <label for="result-agree">동의함</label>
-                                <input type="radio" id="result-disagree" name="result" value="disagree">
-                                <label for="result-disagree">동의안함</label>
-                            </div>
-                        </div>
-
-                        <!-- 전체 동의 -->
-                        <div id="all-agree">
-                            <input type="checkbox" id="all-agree-checkbox">
-                            <label for="all-agree-checkbox"><strong>모두 동의합니다.</strong></label>
-                        </div>
-
-                        <div class="btn-container">
-                            <button id="confirm-btn" class="btn" disabled>확인</button>
-                            <button id="close-terms" class="btn">닫기</button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Loading Section -->
-            <div class="section" id="loading-section">
-                <h2>분석 중...</h2>
-                <div class="analyzing">음성 파일을 분석중입니다. 잠시만 기다려주세요...</div>
-            </div>
-
-            <!-- Result Section -->
-            <div class="section" id="result-section">
-                <h1>결과 확인</h1><br>
-                <div class="chart" id="chart"></div>
-                <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span>%</p>
-                <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
-            </div>
         </div>
     </main>
 
@@ -523,7 +441,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../FrontEnd/Fonts/NanumGothicBase64Bold.js"></script>
     <script src="../FrontEnd/Fonts/NanumGothicBase64.js"></script>
-    <script src="./main.js"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>
