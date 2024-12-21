@@ -19,35 +19,32 @@ body {
     width: 100%;
     z-index: 1000;
     position: fixed;
-    padding: 1% 0;
+    padding-bottom: 1%;
+    padding-top: 1%;
 }
 
 .header {
-    max-width: 1200px;
-    margin: 0 auto;
+    position: relative;
+    width: 70%;
+    left: 15%;
+    box-sizing: border-box;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px;
 }
 
 .logo {
     width: 200%;
     background-image: url('./Images/DeepGuardLogo.png');
     background-size: contain;
-    /* 이미지 크기를 요소에 맞게 조정 */
     background-repeat: no-repeat;
-    /* 이미지 반복 제거 */
     background-position: center;
-    /* 이미지 중앙 정렬 */
     color: transparent;
-    /* 텍스트를 보이지 않게 설정 (필요한 경우) */
     display: inline-block;
-    /* 크기를 적용하기 위해 블록 레벨로 설정 */
 }
 
 .bottomLine {
-    /* border-bottom: clamp(2px, 0.6vw, 6px) solid black; */
     position: relative;
     width: 100%;
     left: clamp(1rem, 7vw, 18.5%);
@@ -57,11 +54,9 @@ body {
 .header a,
 .header nav {
     font-size: 1.6rem;
-    /* 기본 폰트 크기 */
     text-decoration: none;
     color: black;
     transition: font-size 0.2s ease-in-out;
-    /* 부드러운 변화 */
 }
 
 .header .logo {
@@ -76,66 +71,131 @@ body {
     text-decoration: none;
     color: #333;
     cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.menu-hover:hover {
+    color: #007bff;
+}
+
+/* 아래쪽 선 */
+.menu-hover::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    bottom: 0;
+    left: 0;
+    transition: width 0.3s ease-out;
+}
+
+.menu-hover:hover::after {
+    width: 75%;
+}
+
+/* 드롭다운 메뉴 항목에 그림자 효과 */
+.dropdown-content a {
+    width: 160px;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 메뉴 항목을 포함한 드롭다운 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* 메뉴 항목을 클릭하면 메뉴가 열려 있는 상태로 유지 */
+.dropdown.open .dropdown-content {
+    display: block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 170%;
+    left: 0;
+    background-color: white;
+    min-width: 160px;
+    z-index: 1;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: clamp(0.5rem, 1.2rem, 2.5rem) !important;
+    /* 글자 크기 강제로 줄이기 */
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* 클릭 시 메뉴를 보이게 하고, 마우스가 나가면 자동으로 닫히도록 */
+.dropdown:hover .dropdown-content {
+    display: block;
 }
 
 @media (max-width: 1024px) {
     .header {
         padding: 2% 3%;
-        /* border-bottom: 0.35rem solid black; */
     }
 
     .header .logo {
         font-size: 2.5rem;
-        /* 작은 화면에서는 글씨 크기 줄이기 */
     }
 
     .header nav a {
         font-size: 1.3rem;
-        /* 글씨 크기 축소 */
         padding-right: 4vw;
-        /* 여백 조절 */
     }
 }
 
 @media (max-width: 768px) {
     .header {
         padding: 1.5% 2.5%;
-        /* border-bottom: 0.3rem solid black; */
     }
 
     .header .logo {
         font-size: 2rem;
-        /* 더 작은 화면에서는 글씨 크기 더 축소 */
     }
 
     .header nav a {
         font-size: 1.2rem;
-        /* 글씨 크기 축소 */
         padding-right: 3vw;
-        /* 여백도 더 줄임 */
     }
 }
 
 @media (max-width: 480px) {
     .header {
         padding: 1% 2%;
-        border-bottom: 0.25rem solid black;
         flex-direction: column;
-        /* 모바일 화면에서는 세로 정렬 */
     }
 
     .header .logo {
         font-size: 1.8rem;
-        /* 모바일 화면에서는 로고 더 작게 */
     }
 
     .header nav a {
         font-size: 1rem;
-        /* 글씨 크기 축소 */
         padding-right: 2vw;
-        /* 여백 축소 */
     }
 }
+
 
 .container {
     left: 15%;
@@ -176,7 +236,7 @@ body {
 
 .text-content p {
     margin: clamp(10px, 3vw, 20px) 0;
-    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+    font-size: clamp(0.9rem, 0.5vw, 1.1rem);
     color: #555;
 }
 
@@ -288,13 +348,36 @@ main p {
     display: block;
 }
 
+.btnSection {
+    position: relative;
+    left: 38% ;
+    gap: 15px;
+    width: 100%;
+}
+
+.btnSection-file {
+    position: relative;
+    left: 38% ;
+    gap: 15px;
+    width: 100%;
+}
+
+#analyze-btn {
+    display: inline-block;
+    font-family: 'GmarketSansMedium';
+    /* 두 번째 버튼은 업로드 후에 보이도록 설정 */
+}
+.anFont{
+    position: relative;
+    top: 7%;
+}
+
 .upload-container {
+    font-size: clamp(1rem,1.5rem,1.8rem);
     position: relative;
     margin: 20px auto;
     width: 100vw;
-    /* 뷰포트 너비의 80% */
     height: 100vw;
-    /* 뷰포트 너비의 80%로 설정하여 비율 유지 */
     max-height: clamp(2.5rem, 25vw, 30rem);
     max-width: clamp(2.5rem, 25vw, 30rem);
     border: 2px dashed #ccc;
@@ -304,6 +387,29 @@ main p {
     align-items: center;
     background-color: #f9f9f9;
     color: #777;
+    flex-direction: column;
+    overflow: hidden;
+    /* 자식 요소가 부모를 벗어나지 않도록 설정 */
+}
+
+#preview-img {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    opacity: 0.1;
+    object-fit: contain;
+}
+
+.voicePreview{
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    opacity: 0.1;
 }
 
 .upload-container img {
@@ -312,16 +418,36 @@ main p {
     object-fit: contain;
 }
 
+.upload-container-file {
+    font-size: clamp(1rem,1.5rem,1.8rem);
+    position: relative;
+    margin: 20px auto;
+    width: 100vw;
+    height: 100vw;
+    max-height: clamp(2.5rem, 25vw, 30rem);
+    max-width: clamp(2.5rem, 25vw, 30rem);
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    color: #777;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .upload-btn {
     margin-top: 20px;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 25px;
     color: #fff;
     background-color: #007bff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
+
 
 .upload-btn:hover {
     background-color: #0056b3;
@@ -334,6 +460,7 @@ main p {
     margin-right: 20px;
     animation: fadeInOut 2s infinite;
 }
+
 
 @keyframes fadeInOut {
 
@@ -360,6 +487,8 @@ main p {
     font-size: 24px;
     font-weight: bold;
 }
+
+
 
 /* 모달창 스타일 */
 #terms-modal {
@@ -520,15 +649,19 @@ main p {
 
 /* 메인 2 */
 #main2 {
+    /* position: relative;
+    top: -12rem;
+    padding: 2vw;
+    background-color: #f8f8f8;
+    padding-bottom: 8%; */
     position: relative;
     display: flex;
     height: 100%;
     align-items: center;
     background-color: #f8f8f8;
     color: #333;
-    padding-top: 200px;
+    padding-top: 150px;
     justify-content: space-evenly;
-
 }
 
 .containert {
@@ -655,6 +788,12 @@ main p {
     }
 }
 
+
+/* 메인3 */
+#submain2 {
+    height: 100px;
+    background-image: linear-gradient(to bottom, #c9c2c2, #adadad);
+}
 
 #main3 {
     /* margin: 0; */
@@ -806,8 +945,8 @@ main p {
     color: #333;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    padding-top: 9%;
-    height: 83%;
+    padding-top: 7.5%;
+    height: 87%;
 }
 
 .main4Container {

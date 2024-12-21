@@ -19,6 +19,7 @@ class UploadInfo(Base):
     session_idx = Column(Integer, nullable=False)  # INT
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
 
+# 이미지 업로드 백업 테이블 
 class ImageBackupInfo(Base):
     __tablename__ = "image_backup_info"
 
@@ -30,6 +31,7 @@ class ImageBackupInfo(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=True)  # 레코드 생성 시간
     model_pred = Column(Numeric(13, 10), nullable=True)  # DECIMAL(13,10) (모델 예측 확률값)
     assent_yn = Column(String(1), nullable=False)  # CHAR(1)
+
 
 class SessionInfo(Base):
     __tablename__ = "session_info"

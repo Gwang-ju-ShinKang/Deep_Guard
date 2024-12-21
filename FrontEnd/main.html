@@ -32,22 +32,42 @@
             </a>
             <nav>
                 <div class="bottomLine">
-                    <a href="#1">분석하기</a>
-                    <a onclick="goToScroll('main3')">신고센터</a>
-                    <a onclick="goToScroll('main2')">딥페이크 현황</a>
-                    <a onclick="goToScroll('main4')">범죄예방수칙</a>
-                    <a href="board.html">커뮤니티</a>
+                    <div class="dropdown">
+                        <a href="#" class="menu-item menu-hover">분석하기</a>
+                        <div class="dropdown-content">
+                            <a href="#1">딥페이크</a>
+                            <a href="#2">딥보이스</a>
+                            <a href="#1">기타 분석</a>
+                        </div>
+                    </div>
+                    <a onclick="goToScroll('main3')" class="menu-hover">신고센터</a>
+                    <div class="dropdown">
+                        <a href="#5" class="menu-item menu-hover">도움말</a>
+                        <div class="dropdown-content">
+                            <a onclick="goToScroll('main3')">신고센터</a>
+                            <a onclick="goToScroll('main2')">딥페이크 현황</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#6" class="menu-item menu-hover">게시판</a>
+                        <div class="dropdown-content">
+                            <a href="#7">Q&A</a>
+                            <a href="#8">판례 결과</a>
+                            <a href="#9">공지사항</a>
+                        </div>
+                    </div>
                 </div>
             </nav>
         </div>
     </div>
+
     <!-- Main Content -->
     <div class="container">
         <div class="text-content">
             <h1>딥페이크 분석</h1>
             <p>최첨단 AI 기술로 진짜와 가짜를 검증</p>
             <p>AI 기반의 정교한 딥페이크 분석 솔루션</p>
-            <a href="#" class="button">Request a demo</a>
+            <a href="#1" class="button">분석하기</a>
         </div>
         <div class="image-content">
             <img src="./Images/main_img.png" alt="Eye Image">
@@ -63,17 +83,27 @@
                 </div>
                 <br>
                 <div class="upload-container" id="image-preview">
-                    이미지를 올려주세요 또는 Ctrl+ V
+                    <h2>이미지를 올려주세요 </h2>
+                    <h2>또는 Ctrl+ V</h2>
+                    <img id="preview-img" src="./Images/upload.png" alt="파일 미리보기" />
                 </div>
                 <input type="file" id="file-upload" accept="image/*" style="display: none;">
+
                 <div id="consent-section" style="display: none; margin-top: 10px;">
                     <input type="checkbox" id="assent-checkbox" class="styled-checkbox">
                     <label for="assent-checkbox" class="styled-label">
                         동의합니다 (이용 약관 및 개인정보 처리 방침)
                     </label>
                 </div>
-                <label for="file-upload" class="upload-btn">Upload Photo</label>
-                <button id="analyze-btn" class="upload-btn" style="display: none;">Analyze</button>
+
+                <label for="file-upload" class="upload-btn">사진 선택</label>
+
+                <div class="btnSection" style="display: none;">
+                    <label for="file-upload" id="analyze-btn" class="upload-btn">사진 선택</label>
+                    <button class="upload-btn" id="analyze-btn"><span class="anFont">분석하기</span></button>
+                </div></button>
+                </div>
+
                 <!-- 모달 -->
                 <div id="terms-modal" style="display: none;">
                     <div class="modal-content">
@@ -81,15 +111,12 @@
                         <h1>약관 동의</h1>
                         <p>딥페이크 분석 서비스 사용을 위해 아래의 약관에 동의해주세요. 선택 사항에 따라 일부 기능 사용이 제한될 수 있습니다.</p>
 
-                        <!-- 전체 동의 -->
-                        <div id="all-agree">
-                            <input type="checkbox" id="all-agree-checkbox">
-                            <label for="all-agree-checkbox"><strong>모두 동의합니다.</strong></label>
-                        </div>
+
 
                         <div class="terms-section">
                             <div class="terms-header">[필수] 민감정보 수집 및 이용</div>
                             <p>딥페이크 분석 과정에서 제공된 이미지 데이터가 민감정보에 해당될 수 있습니다. 해당 데이터를 분석 목적으로 처리하며, 분석 완료 후 삭제됩니다.</p>
+                            <p>"정보통신망법에 따라 필요한 경우 수사기관에 협조하기 위해 1개월 보관합니다."</p>
                             <div class="agree-options">
                                 <input type="radio" id="sensitive-agree" name="sensitive" value="agree">
                                 <label for="sensitive-agree">동의함</label>
@@ -111,7 +138,8 @@
 
                         <div class="terms-section">
                             <div class="terms-header">[필수] 서비스 개선을 위한 데이터 제공</div>
-                            <p>분석 결과와 관련된 데이터를 익명화하여 서비스 개선 및 연구 목적으로 활용할 수 있습니다.</p>
+                            <p>분석결과와 관련자료는 익명화되어 서비스 개선 및 연구 목적으로 활용될 수 있습니다.</p>
+                            <p>"동의 시 데이터는 3년 동안 보관됩니다."</p>
                             <div class="agree-options">
                                 <input type="radio" id="improve-agree" name="improve" value="agree">
                                 <label for="improve-agree">동의함</label>
@@ -131,6 +159,12 @@
                             </div>
                         </div>
 
+                        <!-- 전체 동의 -->
+                        <div id="all-agree">
+                            <input type="checkbox" id="all-agree-checkbox">
+                            <label for="all-agree-checkbox"><strong>모두 동의합니다.</strong></label>
+                        </div>
+
                         <div class="btn-container">
                             <button id="confirm-btn" class="btn" disabled>확인</button>
                             <button id="close-terms" class="btn">닫기</button>
@@ -142,7 +176,7 @@
             <!-- Loading Section -->
             <div class="section" id="loading-section">
                 <h2>분석 중...</h2>
-                <div class="analyzing">Analyzing image, please wait...</div>
+                <div class="analyzing">이미지를 분석 중입니다. 잠시만 기다려주세요...</div>
             </div>
 
             <!-- Result Section -->
@@ -154,6 +188,122 @@
             </div>
         </div>
     </main>
+
+    <main id="2">
+        <!-- Upload Section -->
+        <div class="mainMove">
+            <div class="section active" id="upload-section">
+                <div class="mainH2">
+                    <h1>딥페이크 보이스 분석하기</h1>
+                </div>
+                <br>
+                <div class="upload-container-file" id="file-preview">
+                    <h2>파일을 올려주세요</h2>
+                    <img id="preview-img" src="./Images/upload.png" alt="파일 미리보기" />
+                </div>
+                <input type="file" id="file-upload-file" accept="*/*" style="display: none;">
+
+                <div id="consent-section" style="display: none; margin-top: 10px;">
+                    <input type="checkbox" id="assent-checkbox" class="styled-checkbox">
+                    <label for="assent-checkbox" class="styled-label">
+                        동의합니다 (이용 약관 및 개인정보 처리 방침)
+                    </label>
+                </div>
+                
+                <label for="file-upload-file" class="upload-btn">파일 선택</label>
+
+                <div class="btnSection-file" style="display: none;">
+                    <label for="file-upload-file" id="analyze-btn" class="upload-btn">파일 선택</label>
+                    <button class="upload-btn" id="analyze-btn"><span class="anFont">분석하기</span></button>
+                </div>
+
+
+
+                <!-- 모달 -->
+                <div id="terms-modal" style="display: none;">
+                    <div class="modal-content">
+
+                        <h1>약관 동의</h1>
+                        <p>딥페이크 분석 서비스 사용을 위해 아래의 약관에 동의해주세요. 선택 사항에 따라 일부 기능 사용이 제한될 수 있습니다.</p>
+
+
+
+                        <div class="terms-section">
+                            <div class="terms-header">[필수] 민감정보 수집 및 이용</div>
+                            <p>딥페이크 분석 과정에서 제공된 이미지 데이터가 민감정보에 해당될 수 있습니다. 해당 데이터를 분석 목적으로 처리하며, 분석 완료 후 삭제됩니다.</p>
+                            <p>"정보통신망법에 따라 필요한 경우 수사기관에 협조하기 위해 1개월 보관합니다."</p>
+                            <div class="agree-options">
+                                <input type="radio" id="sensitive-agree" name="sensitive" value="agree">
+                                <label for="sensitive-agree">동의함</label>
+                                <input type="radio" id="sensitive-disagree" name="sensitive" value="disagree">
+                                <label for="sensitive-disagree">동의안함</label>
+                            </div>
+                        </div>
+
+                        <div class="terms-section">
+                            <div class="terms-header">[필수] 개인정보 수집 및 이용</div>
+                            <p>딥페이크 분석 서비스를 제공하기 위해 세션 ID와 사용자 디바이스 정보를 수집하며, 수집된 정보는 보안 목적으로만 사용됩니다.</p>
+                            <div class="agree-options">
+                                <input type="radio" id="personal-agree" name="personal" value="agree">
+                                <label for="personal-agree">동의함</label>
+                                <input type="radio" id="personal-disagree" name="personal" value="disagree">
+                                <label for="personal-disagree">동의안함</label>
+                            </div>
+                        </div>
+
+                        <div class="terms-section">
+                            <div class="terms-header">[필수] 서비스 개선을 위한 데이터 제공</div>
+                            <p>분석결과와 관련자료는 익명화되어 서비스 개선 및 연구 목적으로 활용될 수 있습니다.</p>
+                            <p>"동의 시 데이터는 3년 동안 보관됩니다."</p>
+                            <div class="agree-options">
+                                <input type="radio" id="improve-agree" name="improve" value="agree">
+                                <label for="improve-agree">동의함</label>
+                                <input type="radio" id="improve-disagree" name="improve" value="disagree">
+                                <label for="improve-disagree">동의안함</label>
+                            </div>
+                        </div>
+
+                        <div class="terms-section">
+                            <div class="terms-header">[필수] 딥페이크 분석 결과 저장 및 이용</div>
+                            <p>분석 결과를 저장하고, 사용자가 요청할 경우 해당 결과를 삭제할 수 있습니다.</p>
+                            <div class="agree-options">
+                                <input type="radio" id="result-agree" name="result" value="agree">
+                                <label for="result-agree">동의함</label>
+                                <input type="radio" id="result-disagree" name="result" value="disagree">
+                                <label for="result-disagree">동의안함</label>
+                            </div>
+                        </div>
+
+                        <!-- 전체 동의 -->
+                        <div id="all-agree">
+                            <input type="checkbox" id="all-agree-checkbox">
+                            <label for="all-agree-checkbox"><strong>모두 동의합니다.</strong></label>
+                        </div>
+
+                        <div class="btn-container">
+                            <button id="confirm-btn" class="btn" disabled>확인</button>
+                            <button id="close-terms" class="btn">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Section -->
+            <div class="section" id="loading-section">
+                <h2>분석 중...</h2>
+                <div class="analyzing">음성 파일을 분석중입니다. 잠시만 기다려주세요...</div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="section" id="result-section">
+                <h1>결과 확인</h1><br>
+                <div class="chart" id="chart"></div>
+                <p>분석 결과 : 딥페이크 확률 <span id="percentage"></span>%</p>
+                <button id="generate-pdf" class="upload-btn" style="display: none; margin-top: 20px;">PDF 저장</button>
+            </div>
+        </div>
+    </main>
+
 
     <main id="main2">
         <div class="containert">
@@ -218,43 +368,43 @@
 
             <div class="grid-container">
                 <div class="card3">
-                    <img src="./Images/ㅋㅋ.png" alt="신고 아이콘">
+                    <img src="../FrontEnd/Images/ㅋㅋ.png" alt="신고 아이콘">
                     <h2>사이버범죄 신고/상담</h2>
                     <p>인터넷 사기, 해킹, 악성 프로그램 등 다양한 사이버 범죄를 신고/상담할 수 있습니다.</p>
                     <a href="https://ecrm.police.go.kr/minwon/main" target="_blank">상담/신고하기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/qq.png" alt="교육 아이콘">
+                    <img src="../FrontEnd/Images/qq.png" alt="교육 아이콘">
                     <h2>사이버범죄 예방교육 신청</h2>
                     <p>쉽고 빠른 사이버 범죄 예방 교육 신청으로 안전한 인터넷 환경을 만들 수 있습니다.</p>
                     <a href="https://www.police.go.kr/www/security/cyber/cyber02.jsp" target="_blank">교육 신청하기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/ㅇ.png" alt="조회 아이콘">
+                    <img src="../FrontEnd/Images/ㅇ.png" alt="조회 아이콘">
                     <h2>인터넷 사기 의심 전화/계좌번호 조회</h2>
                     <p>인터넷 사기에 연류 의심되는 전화번호나 계좌번호를 쉽게 조회 할 수 있습니다.</p>
                     <a href="https://www.police.go.kr/www/security/cyber/cyber04.jsp" target="_blank">조회하기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/ass.png" alt="홍보물 아이콘">
+                    <img src="../FrontEnd/Images/ass.png" alt="홍보물 아이콘">
                     <h2>사이버범죄 예방홍보물</h2>
                     <p>각종 사이버 범죄에 대한 예방 방법을 한눈에 확인할 수 있는 홍보 자료를 제공합니다.</p>
                     <a href="https://www.police.go.kr/www/security/cyber/cyber03.jsp" target="_blank">자세히 보기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/ww.png" alt=" 아이콘">
+                    <img src="../FrontEnd/Images/ww.png" alt=" 아이콘">
                     <h2>한국여성진흥원</h2>
                     <p>각종 사이버 범죄에 대한 디지털 성범죄 피해자 지원센터입니다.</p>
                     <a href="https://d4u.stop.or.kr/" target="_blank">자세히 보기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/ㅇㅇ.png" alt="Icon">
+                    <img src="../FrontEnd/Images/ㅇㅇ.png" alt="Icon">
                     <h2>방송통신 심의 위원회</h3>
                         <p>개인정보·타인의 사진 (영상) 유포 및 명예훼손 삭제·차단을 신청할 수 있습니다.</p>
                         <a href="https://remedy.kocsc.or.kr/ddms/req/viewReqRevwGuide.do">자세히 보기</a>
                 </div>
                 <div class="card3">
-                    <img src="./Images/zxzx.png" alt="Icon">
+                    <img src="../FrontEnd/Images/zxzx.png" alt="Icon">
                     <h2>사이버 폭력 신고</h3>
                         <p>온라인에서 발생하는 명예훼손,욕설,협박 등 신고 상담 서비스입니다.</p>
                         <a href="https://ecrm.police.go.kr/minwon/main">자세히 보기</a>
@@ -356,8 +506,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="./Fonts/NanumGothicBase64Bold.js"></script>
-    <script src="./Fonts/NanumGothicBase64.js"></script>
+    <script src="../FrontEnd/Fonts/NanumGothicBase64Bold.js"></script>
+    <script src="../FrontEnd/Fonts/NanumGothicBase64.js"></script>
     <script src="./main.js"></script>
 </body>
 
