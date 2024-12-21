@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스캔 라인 효과</title>
+  <style>
+    @font-face {
+            font-family: 'GmarketSansMedium';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+    /* 기본 설정 */
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'GmarketSansMedium';
+      background: linear-gradient(135deg, #003366, #00509e, #0080ff, #80dfff);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease infinite;
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* 콘텐츠 스타일 */
+    .content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+    }
+
+    .content p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    .content button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background-color: #00509e;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .content button:hover {
+      background-color: #003366;
+      transform: scale(1.05);
+    }
+
+    /* 스캔 라인 컨테이너 */
+    .scan-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none; /* 사용자가 클릭하지 못하도록 설정 */
+    }
+
+    /* 스캔 라인 */
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      animation: scan 3s linear infinite;
+    }
+
+    /* 스캔 라인 애니메이션 */
+    @keyframes scan {
+      0% {
+        top: -4px;
+      }
+      50% {
+        top: 50%;
+      }
+      100% {
+        top: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 스캔 라인 컨테이너 -->
+  <div class="scan-lines">
+    <div class="scan-line"></div>
+  </div>
+
+  <!-- 콘텐츠 -->
+  <div class="content">
+    <h1>딥페이크 검증 서비스</h1>
+    <p>최첨단 CNN 기술로 딥페이크를 분석하고 검증합니다.</p>
+    <button onclick="redirectToPage()">지금 바로 분석</button>
+  </div>
+
+  <script>
+    // 버튼 클릭 시 주소로 이동하는 함수
+    function redirectToPage() {
+      window.location.href = "http://127.0.0.1:5500/FrontEnd/main.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+/* 기본 설정 */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa; /* 배경을 은은한 회색으로 */
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* 섹션 헤더 */
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #007bff;
+  font-weight: bold;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.section-header h2::before {
+  content: '';
+  width: 50px;
+  height: 3px;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.section-header p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Carousel 컨테이너 */
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+}
+
+/* Carousel 트랙 */
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+  padding: 0 20px; /* 트랙 양쪽 여백 */
+}
+
+/* 뉴스 Carousel 카드 */
+.carousel-card {
+  flex: 0 0 300px;
+  margin: 15px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(87, 105, 177, 0.9), rgba(0, 123, 255, 0.5));
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-card h3 {
+  font-size: 1.2rem;
+  margin: 15px;
+}
+
+.carousel-card p {
+  font-size: 1rem;
+  margin: 15px;
+  line-height: 1.5;
+}
+
+/* 판별 사례 Carousel 카드 */
+.carousel-card2 {
+  flex: 0 0 300px;
+  margin: 15px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 220px; /* 박스 높이 고정 */
+}
+
+.carousel-card2 img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover; /* 비율 유지하면서 박스에 맞춤 */
+  border-radius: 15px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.carousel-card2:hover img {
+  transform: scale(1.05);
+}
+
+/* 네비게이션 버튼 */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+}
+
+.carousel-button {
+  background: white;
+  border: 1px solid #007bff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  color: #007bff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-button:hover {
+  background: #007bff;
+  color: white;
+  transform: scale(1.1);
+}

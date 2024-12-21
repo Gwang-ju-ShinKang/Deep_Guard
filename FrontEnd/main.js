@@ -667,3 +667,5 @@ window.addEventListener("beforeunload", (event) => {
         event.returnValue = ""; // Chrome에서 사용자에게 종료 경고 표시
     });
 });
+
+
