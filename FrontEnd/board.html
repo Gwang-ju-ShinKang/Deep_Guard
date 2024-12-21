@@ -28,42 +28,44 @@
             width: 100%;
             z-index: 1000;
             position: fixed;
-            padding: 1% 0;
+            padding-bottom: 1%;
+            padding-top: 1%;
         }
 
         .header {
-            max-width: 1200px;
-            margin: 0 auto;
+            position: relative;
+            width: 70%;
+            left: 15%;
+            box-sizing: border-box;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
         }
 
         .logo {
             width: 200%;
             background-image: url('./Images/DeepGuardLogo.png');
             background-size: contain;
-            /* 이미지 크기를 요소에 맞게 조정 */
             background-repeat: no-repeat;
-            /* 이미지 반복 제거 */
             background-position: center;
-            /* 이미지 중앙 정렬 */
             color: transparent;
-            /* 텍스트를 보이지 않게 설정 (필요한 경우) */
             display: inline-block;
-            /* 크기를 적용하기 위해 블록 레벨로 설정 */
         }
 
+        .bottomLine {
+            position: relative;
+            width: 100%;
+            left: clamp(1rem, 7vw, 18.5%);
+            top: 0.5rem;
+        }
 
         .header a,
         .header nav {
             font-size: 1.6rem;
-            /* 기본 폰트 크기 */
             text-decoration: none;
             color: black;
             transition: font-size 0.2s ease-in-out;
-            /* 부드러운 변화 */
         }
 
         .header .logo {
@@ -78,8 +80,130 @@
             text-decoration: none;
             color: #333;
             cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            display: inline-block;
         }
 
+        .menu-hover:hover {
+            color: #007bff;
+        }
+
+        /* 아래쪽 선 */
+        .menu-hover::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: #007bff;
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease-out;
+        }
+
+        .menu-hover:hover::after {
+            width: 75%;
+        }
+
+        /* 드롭다운 메뉴 항목에 그림자 효과 */
+        .dropdown-content a {
+            width: 160px;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* 메뉴 항목을 포함한 드롭다운 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 메뉴 항목을 클릭하면 메뉴가 열려 있는 상태로 유지 */
+        .dropdown.open .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 170%;
+            left: 0;
+            background-color: white;
+            min-width: 160px;
+            z-index: 1;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: clamp(0.5rem, 1.2rem, 2.5rem) !important;
+            /* 글자 크기 강제로 줄이기 */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        /* 클릭 시 메뉴를 보이게 하고, 마우스가 나가면 자동으로 닫히도록 */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .header {
+                padding: 2% 3%;
+            }
+
+            .header .logo {
+                font-size: 2.5rem;
+            }
+
+            .header nav a {
+                font-size: 1.3rem;
+                padding-right: 4vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5% 2.5%;
+            }
+
+            .header .logo {
+                font-size: 2rem;
+            }
+
+            .header nav a {
+                font-size: 1.2rem;
+                padding-right: 3vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1% 2%;
+                flex-direction: column;
+            }
+
+            .header .logo {
+                font-size: 1.8rem;
+            }
+
+            .header nav a {
+                font-size: 1rem;
+                padding-right: 2vw;
+            }
+        }
 
 
         /* 메인 컨테이너 */
@@ -113,10 +237,8 @@
             text-align: left;
             /* 제목 열 왼쪽 정렬 */
         }
-        /* .board-table th:nth-child(2) {
-            text-align: left;
-        }   
-        */
+
+        
         .board-table th {
             background-color: #007bff;
             color: #fff;
@@ -140,6 +262,7 @@
         }
 
         .board-table a {
+            cursor: pointer;
             color: #007bff;
             text-decoration: none;
         }
@@ -188,24 +311,159 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             height: 660px;
             max-height: 660px;
-            overflow-y: auto; /* 스크롤바 추가 */
+            overflow-y: auto;
+            /* 스크롤바 추가 */
+        }
+
+        .board-container::-webkit-scrollbar {
+            width: 12px;
+            background-color: white;
+        }
+
+        .board-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(transparent, #007bff);
+            border-radius: 6px;
+            border-radius: 20px
+        }
+
+        .board-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(transparent, #007bff, transparent);
+        }
+
+        /**/
+        #privacy-policy .container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        #privacy-policy .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        #privacy-policy .sub-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #privacy-policy .table-wrapper {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #privacy-policy table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #privacy-policy th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        #privacy-policy th {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        #privacy-policy td {
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        #privacy-policy .note {
+            font-size: 0.9rem;
+            margin-top: 16px;
+            line-height: 1.8;
+        }
+
+        #privacy-policy .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+
+        .header2 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .details2 {
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .details2 ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .details2 li {
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 20px;
+            text-align: left;
         }
     </style>
 </head>
 
 <body>
-    <!-- 상단바 -->
+    <!-- Header -->
     <div class="topBar">
         <div class="header">
             <a href="./main.html">
                 <div class="logo">&nbsp;D Guard</div>
             </a>
             <nav>
-                <a href="main.html#1">분석하기</a>
-                <a href="main.html#main3">신고센터</a>
-                <a href="main.html#main2">딥페이크 현황</a>
-                <a href="main.html#main4">범죄예방수칙</a>
-                <a href="board.html">공지사항</a>
+                <div class="bottomLine">
+                    <div class="dropdown">
+                        <a href="#" class="menu-item menu-hover">분석하기</a>
+                        <div class="dropdown-content">
+                            <a href="main.html#1">딥페이크</a>
+                            <a href="main.html#2">딥보이스</a>
+                            <a href="main.html#1">기타 분석</a>
+                        </div>
+                    </div>
+                    <a href="main.html#main3" class="menu-hover">신고센터</a>
+                    <div class="dropdown">
+                        <a href="main.html#5" class="menu-item menu-hover">도움말</a>
+                        <div class="dropdown-content">
+                            <a href="main.html#main4">범죄 예방 수칙</a>
+                            <a href="main.html#main2">딥페이크 현황</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#6" class="menu-item menu-hover">게시판</a>
+                        <div class="dropdown-content">
+                            <a href="">Q&A</a>
+                            <a href="#8">판례 결과</a>
+                            <a href="board.html">공지사항</a>
+                        </div>
+                    </div>
+                </div>
             </nav>
         </div>
     </div>
@@ -232,8 +490,47 @@
                     </tr>
                     <tr class="details">
                         <td colspan="3">
-                            <textarea readonly>서비스 이용과 관련한 개인정보 처리방침이 변경되었습니다. 
-변경된 내용은 개인정보 처리방침 페이지에서 확인할 수 있습니다.</textarea>
+                            <div id="privacy-policy">
+                                <div class="container">
+                                    <div class="title">추가적인 이용·제공 판단 기준</div>
+                                    <p>
+                                        개인정보는 <span class="highlight">『개인정보 보호법』 제15조제3항 또는 제17조제4항</span>에 따라 『개인정보
+                                        보호법』 시행령 제14조의2에 따른 사항을 고려하여 정보주체의 동의 없이 개인정보를 추가적으로 이용·제공할 수 있습니다.
+                                    </p>
+
+                                    <div class="table-wrapper">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>제공받는자</th>
+                                                    <th>제공목적</th>
+                                                    <th>제공항목</th>
+                                                    <th>보유 및 이용기간</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>사이트 운영자</td>
+                                                    <td>모델 학습 개선</td>
+                                                    <td>사용자가 업로드한 이미지 및 영상 파일</td>
+                                                    <td>3년</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="sub-title">이에 따라 개인정보를 정보주체의 동의하여 추가적인 이용·제공을 하기 위해서 다음과 같은 사항을
+                                        고려하였습니다.</div>
+                                    <div class="note">
+                                        <ol>
+                                            <li>제공하는 개인정보의 당초 수집 목적과의 '모델 분석 서비스'를 위하여 제공하는 것으로, 수집 목적과 관련성이 있고 신청자가
+                                                예측할 수 있는 범위에서 제공합니다.</li>
+                                            <li>서비스를 이행하기 위하여 제공하는 정보로써, 정보주체의 이익을 부당하게 침해하지 않습니다.</li>
+                                            <li>서비스를 이행하기 위하여 필요한 최소한의 정보만을 선별하여 안전하게 제공합니다.</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -243,9 +540,27 @@
                     </tr>
                     <tr class="details">
                         <td colspan="3">
-                            <textarea readonly>안정적인 서비스 제공을 위해 다음 일정에 시스템 점검이 진행됩니다.
-점검 시간: 2024년 12월 25일 02:00 ~ 05:00
-점검 중에는 서비스 이용이 제한됩니다. 불편을 끼쳐드려 죄송합니다.</textarea>
+                            <div id="privacy-policy">
+                                <div class="container">
+                                    <div class="header2">
+                                        안녕하세요. DEEPGUARD입니다.
+                                    </div>
+                                    <div class="details2">
+                                        <p>2024년 12월 19일 서비스 점검이 진행될 예정입니다.</p>
+                                        <ul>
+                                            <li><span class="highlight">* 일시:</span> 2024년 12월 19일 목요일 19:00 ~ 22:00
+                                            </li>
+                                            <li><span class="highlight">* 대상:</span> 웹(Web) 서비스</li>
+                                            <li><span class="highlight">* 항목:</span> 시스템 점검</li>
+                                        </ul>
+                                        <p>본 서비스 점검은 고객의 서비스 이용에는 영향이 없습니다. (서비스 무중단)</p>
+                                    </div>
+                                    <div class="footer">
+                                        앞으로 계속 진화될 DEEPGUARD를 지켜봐 주시기 바랍니다.<br>
+                                        DEEPGUARD Team 일동
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -255,22 +570,25 @@
                     </tr>
                     <tr class="details">
                         <td colspan="3">
-                            <textarea readonly>안녕하세요, CNN 기반 딥페이크 검증 서비스가 정식으로 오픈되었습니다.
-딥페이크 검출과 분석을 통해 신뢰할 수 있는 솔루션을 제공하겠습니다. 많은 이용 부탁드립니다.
-[업데이트] 딥페이크 검출 정확도 95%로 향상
-최신 CNN 알고리즘 업데이트로 딥페이크 검출 정확도가 95%로 향상되었습니다. 더욱 정교하고 신뢰할 수 있는 분석 결과를 제공합니다.</textarea>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td><a onclick="toggleDetails(this)">[공지] 서비스 오픈 안내</a></td>
-                        <td>2024.12.10</td>
-                    </tr>
-                    <tr class="details">
-                        <td colspan="3">
-                            <textarea readonly>
+                            <div id="privacy-policy">
+                                <div class="container">
+                                    <div class="header2">
+                                        안녕하세요. DEEPGUARD입니다.
+                                    </div>
+                                    <div class="details2">
+                                        <p>안녕하세요, CNN 기반 딥페이크 검증 서비스가 정식으로 오픈되었습니다.</p>
+                                        <p>딥페이크 검출과 분석을 통해 신뢰할 수 있는 솔루션을 제공하겠습니다. 많은 이용 부탁드립니다.</p>
+                                        <p>[업데이트] 딥페이크 검출 정확도 95%로 향상</p>
+                                        <p>최신 CNN 알고리즘 업데이트로 딥페이크 검출 정확도가 95%로 향상되었습니다.</p>
+                                        <p>더욱 정교하고 신뢰할 수 있는 분석 결과를 제공합니다.</p>
 
-                            </textarea>
+                                    </div>
+                                    <div class="footer">
+                                        앞으로 계속 진화될 DEEPGUARD를 지켜봐 주시기 바랍니다.<br>
+                                        DEEPGUARD Team 일동
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -289,6 +607,29 @@
                 nextRow.classList.add('open');
             }
         }
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            let isHovered = false; // 마우스가 메뉴에 올라간 상태 추적
+
+            // 메뉴 항목에 마우스를 올리면 드롭다운 열기
+            dropdown.addEventListener('mouseenter', function () {
+                this.classList.add('open'); // 메뉴에 마우스를 올리면 드롭다운 열기
+                isHovered = true; // 마우스가 메뉴 항목 위에 있을 때
+            });
+
+            // 드롭다운 메뉴 내부에서 마우스가 벗어날 때만 닫기
+            dropdown.querySelector('.dropdown-content').addEventListener('mouseleave', function () {
+                this.parentElement.classList.remove('open'); // 드롭다운에서 마우스가 벗어나면 닫기
+                isHovered = false; // 마우스가 벗어났음을 추적
+            });
+
+            // 드롭다운 메뉴 항목에서 벗어나도 드롭다운이 고정되도록
+            dropdown.addEventListener('mouseleave', function () {
+                if (!isHovered) {
+                    this.classList.remove('open'); // 마우스가 메뉴와 드롭다운 둘 다 벗어나면 닫기
+                }
+            });
+        });
     </script>
 </body>
+
 </html>

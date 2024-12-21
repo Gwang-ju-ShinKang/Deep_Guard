@@ -3,6 +3,22 @@ body {
     position: relative;
     margin: 0;
     padding: 0;
+
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(transparent, #007bff);
+    border-radius: 6px;
+    border-radius: 20px
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(transparent, #007bff, transparent);
 }
 
 html,
@@ -350,14 +366,14 @@ main p {
 
 .btnSection {
     position: relative;
-    left: 38% ;
+    left: 38%;
     gap: 15px;
     width: 100%;
 }
 
 .btnSection-file {
     position: relative;
-    left: 38% ;
+    left: 38%;
     gap: 15px;
     width: 100%;
 }
@@ -367,13 +383,14 @@ main p {
     font-family: 'GmarketSansMedium';
     /* 두 번째 버튼은 업로드 후에 보이도록 설정 */
 }
-.anFont{
+
+.anFont {
     position: relative;
     top: 7%;
 }
 
 .upload-container {
-    font-size: clamp(1rem,1.5rem,1.8rem);
+    font-size: clamp(1rem, 1.5rem, 1.8rem);
     position: relative;
     margin: 20px auto;
     width: 100vw;
@@ -402,7 +419,7 @@ main p {
     object-fit: contain;
 }
 
-.voicePreview{
+.voicePreview {
     position: absolute;
     top: 10%;
     left: 10%;
@@ -419,7 +436,7 @@ main p {
 }
 
 .upload-container-file {
-    font-size: clamp(1rem,1.5rem,1.8rem);
+    font-size: clamp(1rem, 1.5rem, 1.8rem);
     position: relative;
     margin: 20px auto;
     width: 100vw;
@@ -642,11 +659,6 @@ main p {
     transform: translate(-50%, -50%);
 }
 
-#submain {
-    height: 100px;
-    background-image: linear-gradient(to bottom, #f8f8f8, #c9c2c2);
-}
-
 /* 메인 2 */
 #main2 {
     /* position: relative;
@@ -660,7 +672,7 @@ main p {
     align-items: center;
     background-color: #f8f8f8;
     color: #333;
-    padding-top: 150px;
+    padding-top: 200px;
     justify-content: space-evenly;
 }
 
@@ -790,10 +802,7 @@ main p {
 
 
 /* 메인3 */
-#submain2 {
-    height: 100px;
-    background-image: linear-gradient(to bottom, #c9c2c2, #adadad);
-}
+
 
 #main3 {
     /* margin: 0; */
